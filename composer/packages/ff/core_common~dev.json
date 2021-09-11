@@ -1,0 +1,35 @@
+{
+  "packages": {
+    "ff/core_common": [
+      {
+        "name": "ff/core_common",
+        "description": "FF: Forms PHP Framework - Common files",
+        "keywords": [
+          "framework",
+          "forms",
+          "ffphp",
+          "ff"
+        ],
+        "version": "1.x-dev",
+        "license": "LGPL-3.0-or-later",
+        "authors": [
+          {
+            "name": "Samuele Diella",
+            "email": "samuele.diella@gmail.com"
+          }
+        ],
+        "source": {
+          "type": "svn",
+          "url": "https://github.com/SamueleD78/ff.git/",
+          "reference": "trunk/src/core/Common/"
+        },
+        "autoload": {
+          "psr-4": {
+            "FF\\Core\\Common\\": "/"
+          },
+          "files": [ "helpers.php" ]
+        }
+      }
+    ]
+  }
+}

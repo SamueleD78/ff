@@ -1,0 +1,11 @@
+{
+  "packages" : [],
+
+  "metadata-url": "/composer/packages/%package%.json",
+  "repositories" : [
+    {
+      "type": "composer",
+      "url": "https://www.ffphp.sam/composer/"
+    }
+  ]
+}
