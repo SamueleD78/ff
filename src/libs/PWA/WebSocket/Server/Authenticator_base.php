@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -16,6 +16,6 @@ use FF\Libs\PWA\WebSocket\Common\Log;
 
 abstract class Authenticator_base
 {
-	abstract function authenticate(array $payload, ControlClient $client): bool;
-	abstract function authorizeService(string|null $service_name, ControlClient $client): bool;
+	abstract function authenticate(array $payload, ControlClient_base $client): bool;
+	abstract function authorizeService(string|null $service_name, ControlClient_base $client): bool;
 }

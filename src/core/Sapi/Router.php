@@ -1,7 +1,7 @@
 <?php
 /**
  * @package FormsFramework
- * @subpackage core\Sapi
+ * @subpackage Core\Sapi
  * @author Samuele Diella <samuele.diella@gmail.com>
  * @copyright Copyright (c) 2004-2021, Samuele Diella
  * @license https://opensource.org/licenses/LGPL-3.0
@@ -14,7 +14,7 @@ use FF\Core\Common;
 
 /**
  * @package FormsFramework
- * @subpackage SAPI
+ * @subpackage Core\Sapi
  * @author Samuele Diella <samuele.diella@gmail.com>
  * @copyright Copyright (c) 2004-2021, Samuele Diella
  * @license https://opensource.org/licenses/LGPL-3.0

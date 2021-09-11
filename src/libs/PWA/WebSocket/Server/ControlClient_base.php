@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -16,7 +16,7 @@ use FF\Core\Common;
 use FF\Libs\PWA\WebSocket\Common\Log;
 use JetBrains\PhpStorm\ArrayShape;
 
-class ControlClient
+abstract class ControlClient_base
 {
 	use WebSocketCommon\Errors;
 	
@@ -46,7 +46,9 @@ class ControlClient
 		WebSocketCommon\COMMAND_LIST_CLIENTS		=> "cmdListClients",
 		WebSocketCommon\COMMAND_SEND_MESSAGE		=> "cmdSendMessage",
 	];
-	
+
+	#[ArrayShape(["error" => "int"])] abstract public function onCustomCmd($payload): array|false;
+
 	public function __construct(ControlInterface_base $interface, $sock)
 	{
 		$this->interface = $interface;
@@ -362,7 +364,7 @@ class ControlClient
 		}
 	}
 	
-	protected function getContainer(): Server|Service_base
+	protected function getContainer(): Server_base|Service_base
 	{
 		if ($this->service === null)
 		{
@@ -500,11 +502,5 @@ class ControlClient
 		{
 			return false;
 		}
-	}
-
-	#[ArrayShape(["error" => "int"])]
-	public function onCustomCmd($payload): array|false
-	{
-		return ["error" => 0];
 	}
 }

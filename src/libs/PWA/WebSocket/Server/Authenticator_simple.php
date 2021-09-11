@@ -89,7 +89,7 @@ class Authenticator_simple extends Authenticator_base
 		}
 	}
 
-	public function authenticate(array $payload, ControlClient $client):bool {
+	public function authenticate(array $payload, ControlClient_base $client):bool {
 		if (!isset($payload["id"]))
 		{
 			$client->setError(
@@ -141,7 +141,7 @@ class Authenticator_simple extends Authenticator_base
 		}
 	}
 
-	public function authorizeService(string|null $service_name, ControlClient $client):bool {
+	public function authorizeService(string|null $service_name, ControlClient_base $client):bool {
 		if ($client->account === null)
 		{
 			throw new Exception("Cannot authorize before auth");

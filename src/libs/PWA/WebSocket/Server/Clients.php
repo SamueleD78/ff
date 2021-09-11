@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  *
  * @package FormsFramework
  * @subpackage Libs
@@ -17,19 +17,19 @@ use JetBrains\PhpStorm\ArrayShape;
 trait Clients
 {
 	/**
-	 * @var array<string, Client_base|ControlClient>
+	 * @var array<string, Client_base|ControlClient_base>
 	 */
 	protected array $clients = [];
 
 	/**
-	 * @return Client_base[]|ControlClient[]
+	 * @return Client_base[]|ControlClient_base[]
 	 */
 	public function getClients(): array
 	{
 		return $this->clients;
 	}
 
-	public function addClient($id, Client_base|ControlClient $client): void
+	public function addClient($id, Client_base|ControlClient_base $client): void
 	{
 		$this->clients[$id] = $client;
 	}

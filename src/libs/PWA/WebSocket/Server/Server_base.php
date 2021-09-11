@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -18,7 +18,7 @@ use FF\Core\Sapi;
 use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
-class Server
+abstract class Server_base
 {
 	use Clients, WebSocketCommon\Errors;
 
@@ -88,6 +88,15 @@ class Server
 
 	public bool		$log_payloads				= true;
 
+	/**
+	 * Called when the server is ready to go
+	 * if returns true, the server will proceed, with false it will stop
+	 * @return bool
+	 */
+	abstract protected function onReady(): bool;
+	abstract protected function onBeforeStop(): void;
+	abstract protected function onStop(): void;
+
 	function __construct(string $websocket_class)
 	{
 		$this->router = new Sapi\Router();
@@ -121,7 +130,7 @@ class Server
 		return $this->services[$name] ?? false;
 	}
 
-	public function addSocket(mixed $sock, Server|Websocket|ControlInterface_base|ControlClient $obj, int $type): string
+	public function addSocket(mixed $sock, Server_base|Websocket|ControlInterface_base|ControlClient_base $obj, int $type): string
 	{
 		$id = Common\uuidv4();
 
@@ -172,12 +181,12 @@ class Server
 	{
 		if ($daemonize)
 		{
-			$this->getLog()->out("Forms PHP Framework WebSocket Server v" . WebSocketCommon\VERSION);
+			$this->getLog()->out("Forms PHP Framework WebSocket Server_base v" . WebSocketCommon\VERSION);
 			$this->getLog()->out("Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>");
 		}
 		else
 		{
-			fwrite(STDOUT, "Forms PHP Framework WebSocket Server v" . WebSocketCommon\VERSION . "\n");
+			fwrite(STDOUT, "Forms PHP Framework WebSocket Server_base v" . WebSocketCommon\VERSION . "\n");
 			fwrite(STDOUT, "Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>\n\n");
 		}
 
@@ -384,7 +393,7 @@ class Server
 					if (count($control_clients)) {
 						foreach ($control_clients as $sock_id) {
 							unset($read[$sock_id]);
-							/* @var $tmp_obj ControlClient */
+							/* @var $tmp_obj ControlClient_base */
 							$tmp_obj = $this->reverse_sockets[$sock_id]["obj"];
 
 							$this->getLog()?->out(
@@ -575,18 +584,5 @@ class Server
 		$this->getLog()?->out(
 			text: "Done"
 		);
-	}
-
-	function onReady(): bool
-	{
-		return true;
-	}
-
-	function onBeforeStop(): void
-	{
-	}
-
-	function onStop(): void
-	{
 	}
 }

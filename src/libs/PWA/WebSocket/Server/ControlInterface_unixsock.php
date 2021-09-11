@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -127,7 +127,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		@stream_set_blocking($newsock, false);
 
-		/* @var $newclient ControlClient */
+		/* @var $newclient ControlClient_base */
 		$newclient = new $this->controlclient_class($this, $newsock);
 		$id = $this->server->addSocket($newsock, $newclient, WebSocketCommon\SOCK_TYPE_CONTROL_CLIENT);
 		$newclient->setID($id);

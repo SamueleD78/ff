@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -144,6 +144,6 @@ const PROT_CLOSE_CODE_DESCR = [
 	PROT_CLOSE_POLICY_VIOLATION			=> "Policy Violation",
 	PROT_CLOSE_MESSAGE_TOO_BIG			=> "Message Too Big",
 	PROT_CLOSE_MANDATORY_EXT			=> "Mandatory Ext.",
-	PROT_CLOSE_INTERNAL_SERVER_ERR		=> "Internal Server Error",
+	PROT_CLOSE_INTERNAL_SERVER_ERR		=> "Internal Server_base Error",
 	PROT_CLOSE_TLS_HANDSHAKE			=> "TLS handshake",
 ];

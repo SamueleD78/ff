@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -39,7 +39,7 @@ class Websocket
 	 * @var array<string, string>
 	 */
 	protected array $headers = [];
-	protected ?Server $server = null;
+	protected ?Server_base $server = null;
 	
 	private bool $handshake_done = false;
 	private ?string $buffer_read = null;

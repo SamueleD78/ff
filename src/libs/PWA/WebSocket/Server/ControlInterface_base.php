@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server Library
+ * WebSocket Server_base Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -20,7 +20,7 @@ abstract class ControlInterface_base
 	
 	private ?string 		$id;
 	
-	public ?Server 	$server = null;
+	public ?Server_base 	$server = null;
 	
 	public ?string 			$controlclient_class = null;
 
@@ -57,7 +57,7 @@ abstract class ControlInterface_base
 		$this->controlclient_class = $controlclient_class;
 	}
 
-	public function setServer(Server $server)
+	public function setServer(Server_base $server)
 	{
 		if ($this->server)
 			throw new \Exception("The instance already belong to a server");
