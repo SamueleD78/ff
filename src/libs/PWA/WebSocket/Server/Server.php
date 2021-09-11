@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -11,16 +11,15 @@
  */
 
 namespace FF\Libs\PWA\WebSocket\Server;
+use FF\Core\Common\Events\Events;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
-
-use FF\Libs\PWA\WebSocket\Common\Log;
 use FF\Core\Sapi;
 use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
-abstract class Server_base
+class Server
 {
-	use Clients, WebSocketCommon\Errors;
+	use Clients, Common\Errors, Events;
 
 	public string 	$addr			= "127.0.0.1";
 	public int 		$port			= 9000;
@@ -88,24 +87,20 @@ abstract class Server_base
 
 	public bool		$log_payloads				= true;
 
-	/**
-	 * Called when the server is ready to go
-	 * if returns true, the server will proceed, with false it will stop
-	 * @return bool
-	 */
-	abstract protected function onReady(): bool;
-	abstract protected function onBeforeStop(): void;
-	abstract protected function onStop(): void;
-
 	function __construct(string $websocket_class)
 	{
 		$this->router = new Sapi\Router();
 		$this->websocket_class = $websocket_class;
 	}
 
-	function getLog(): ?Log
+	function getLog(): ?Common\Log
 	{
-		return Log::get($this->log_server);
+		return Common\Log::get($this->log_server);
+	}
+
+	public function getErrorString(int $code): string
+	{
+		return WebSocketCommon\get_error_string($code);
 	}
 
 	public function addControlIF(ControlInterface_base $instance): void
@@ -130,7 +125,7 @@ abstract class Server_base
 		return $this->services[$name] ?? false;
 	}
 
-	public function addSocket(mixed $sock, Server_base|Websocket|ControlInterface_base|ControlClient_base $obj, int $type): string
+	public function addSocket(mixed $sock, Server|Websocket|ControlInterface_base|ControlClient_base $obj, int $type): string
 	{
 		$id = Common\uuidv4();
 
@@ -166,7 +161,7 @@ abstract class Server_base
 
 			$this->getLog()?->out(
 				text: "Attaching new client to service " . $service,
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			
 			$tmp = $this->services[$service]->newClient($websocket, $match);
@@ -181,12 +176,12 @@ abstract class Server_base
 	{
 		if ($daemonize)
 		{
-			$this->getLog()->out("Forms PHP Framework WebSocket Server_base v" . WebSocketCommon\VERSION);
+			$this->getLog()->out("Forms PHP Framework WebSocket Server v" . WebSocketCommon\VERSION);
 			$this->getLog()->out("Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>");
 		}
 		else
 		{
-			fwrite(STDOUT, "Forms PHP Framework WebSocket Server_base v" . WebSocketCommon\VERSION . "\n");
+			fwrite(STDOUT, "Forms PHP Framework WebSocket Server v" . WebSocketCommon\VERSION . "\n");
 			fwrite(STDOUT, "Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>\n\n");
 		}
 
@@ -194,7 +189,7 @@ abstract class Server_base
 
 		if ($this->sock !== null)
 		{
-			$this->setError(code: WebSocketCommon\ERROR_ALREADY_STARTED, level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN);
+			$this->setError(code: WebSocketCommon\ERROR_ALREADY_STARTED, level: Common\constLogLevels::LOG_LEVEL_WARN);
 			return null;
 		}
 
@@ -204,7 +199,7 @@ abstract class Server_base
 
 		$this->getLog()?->out(
 			text: "Checking router rules.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 		foreach ($this->router->rules as $priority)
@@ -213,21 +208,21 @@ abstract class Server_base
 			{
 				if (!isset($rule->destination->service))
 				{
-					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: Common\constLogLevels::LOG_LEVEL_FATAL);
 					return false;
 				}
 
 				$service = $rule->destination->service;
 				if (!isset($this->services[$service]))
 				{
-					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: Common\constLogLevels::LOG_LEVEL_FATAL);
 					return false;
 				}
 			}
 		}
 		$this->getLog()?->out(
 			text: "OK",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 
 		$this->clients = [];
@@ -239,7 +234,7 @@ abstract class Server_base
 		{
 			$this->getLog()?->out(
 				text: "Create a streaming socket of type TCP/IP over SSL on address " . $this->addr . ":" . $this->port . ".. ",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 				newline: false
 			);
 			$context = stream_context_create([
@@ -247,7 +242,7 @@ abstract class Server_base
 			]);
 			if (!is_resource($context))
 			{
-				$this->setError(code: WebSocketCommon\ERROR_CONTEXT_CREATION, level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				$this->setError(code: WebSocketCommon\ERROR_CONTEXT_CREATION, level: Common\constLogLevels::LOG_LEVEL_FATAL);
 				return false;
 			}
 
@@ -263,7 +258,7 @@ abstract class Server_base
 		{
 			$this->getLog()?->out(
 				text: "Create a streaming socket of type TCP/IP on address " . $this->addr . ":" . $this->port . ".. ",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 				newline: false
 			);
 			$this->sock = stream_socket_server(
@@ -276,7 +271,7 @@ abstract class Server_base
 
 		if (!$this->sock)
 		{
-			$this->setError(code: WebSocketCommon\ERROR_SERVER_SOCKET, additional_data: ["errno" => $errno, "errstr" => $errstr],level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+			$this->setError(code: WebSocketCommon\ERROR_SERVER_SOCKET, additional_data: ["errno" => $errno, "errstr" => $errstr],level: Common\constLogLevels::LOG_LEVEL_FATAL);
 			return false;
 		}
 		stream_set_blocking($this->sock, false);
@@ -286,7 +281,7 @@ abstract class Server_base
 		pcntl_signal(SIGTERM, function ($signal) {
 			$this->getLog()?->out(
 				text: "caught SIGTERM",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			$this->stop();
 			exit;
@@ -294,7 +289,7 @@ abstract class Server_base
 		pcntl_signal(SIGINT, function ($signal) { // debugger stop
 			$this->getLog()?->out(
 				text: "caught SIGINT",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			$this->stop();
 			exit;
@@ -306,18 +301,18 @@ abstract class Server_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 
 		$this->getLog()?->out(
 			text: "Starting all the control interfaces..",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		if (count($this->control_interfaces))
 		{
 			$this->getLog()?->out(
 				text: "Starting control sockets..",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 
 			foreach ($this->control_interfaces as $tmp)
@@ -326,22 +321,15 @@ abstract class Server_base
 				if ($rc === false)
 				{
 					$this->stop();
-					$this->setError(code: WebSocketCommon\ERROR_CONTROL_INTERFACE, additional_data: $tmp->getLastError(),level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+					$this->setError(code: WebSocketCommon\ERROR_CONTROL_INTERFACE, additional_data: $tmp->getLastError(),level: Common\constLogLevels::LOG_LEVEL_FATAL);
 					return false;
 				}
 			}
 		}
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
-
-		$rc = $this->onReady();
-		if ($rc === false)
-		{
-			$this->stop();
-			return false;
-		}
 
 		$this->getLog()?->out(
 			text: "Listening"
@@ -362,7 +350,7 @@ abstract class Server_base
 
 			if ($rc === false)
 			{
-				$this->setError(code: WebSocketCommon\ERROR_SERVER_STREAM_SELECT,level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				$this->setError(code: WebSocketCommon\ERROR_SERVER_STREAM_SELECT,level: Common\constLogLevels::LOG_LEVEL_FATAL);
 				$this->stop();
 				return false;
 			}
@@ -380,7 +368,7 @@ abstract class Server_base
 
 							$this->getLog()?->out(
 								text: "Connection on control socket " . get_class($tmp_obj),
-								level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL
+								level: Common\constLogLevels::LOG_LEVEL_FATAL
 							);
 							$tmp_obj->accept(); // will add the socket internally
 						}
@@ -398,7 +386,7 @@ abstract class Server_base
 
 							$this->getLog()?->out(
 								text: "Read on control socket " . get_class($tmp_obj) . " [" . $sock_id . "]",
-								level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+								level: Common\constLogLevels::LOG_LEVEL_DEBUG
 							);
 							$tmp_obj->interface->receive($sock_id, $this->sockets[$sock_id]); // the socket is passed to empty it
 						}
@@ -413,7 +401,7 @@ abstract class Server_base
 
 						$this->getLog()?->out(
 							text: "Accepting new connection.. ",
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 							newline: false
 						);
 
@@ -430,7 +418,7 @@ abstract class Server_base
 
 						$this->getLog()?->out(
 							text: "Done",
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 
 						/* all good, create the Websocket intermediate object
@@ -453,7 +441,7 @@ abstract class Server_base
 				foreach ($read as $sock_id => $read_sock) {
 					$this->getLog()?->out(
 						text: "Reading data on sock [" . $sock_id . "].. ",
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 						newline: false
 					);
 
@@ -479,7 +467,7 @@ abstract class Server_base
 						$this->setError(code: WebSocketCommon\ERROR_UNKNOWN_CLIENT);
 						$this->getLog()?->out(
 							text: "detaching web socket [" . $sock_id . "]",
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 						@fclose($read_sock);
 						$this->removeSocket($sock_id);
@@ -494,7 +482,7 @@ abstract class Server_base
 					if ($raw_data === false) {
 						$this->getLog()?->out(
 							text: "FALSE on fread, disconnecting",
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 
 						$websocket->disconnect();
@@ -509,7 +497,7 @@ abstract class Server_base
 
 					$this->getLog()?->out(
 						text: "Received " . $bytes . " bytes",
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 
 					$rc = $websocket->receive($raw_data, $bytes); // if a client is started, it will dispatch everything to the client
@@ -545,12 +533,10 @@ abstract class Server_base
 			text: "Initiating shutdown sequence.."
 		);
 
-		$this->onBeforeStop();
-
 		// 1: stop clients
 		$this->getLog()?->out(
 			text: "disconnecting clients..",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		if (isset($this->sockets_bt_type[WebSocketCommon\SOCK_TYPE_CLIENT]))
 		{
@@ -564,7 +550,7 @@ abstract class Server_base
 		// 2: stop this server
 		$this->getLog()?->out(
 			text: "Stopping server..",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		@fclose($this->sock);
 		$this->sock = null;
@@ -572,14 +558,12 @@ abstract class Server_base
 		// 3: stop control interfaces (it will disconnect all the control clients connected)
 		$this->getLog()?->out(
 			text: "Stopping Control Interfaces..",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		foreach ($this->control_interfaces as $control)
 		{
 			$control->stop();
 		}
-
-		$this->onStop();
 
 		$this->getLog()?->out(
 			text: "Done"

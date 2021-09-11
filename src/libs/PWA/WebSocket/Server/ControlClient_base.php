@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -13,12 +13,11 @@
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 use FF\Core\Common;
-use FF\Libs\PWA\WebSocket\Common\Log;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class ControlClient_base
 {
-	use WebSocketCommon\Errors;
+	use Common\Errors;
 	
 	public ?ControlInterface_base $interface = null;
 
@@ -55,11 +54,16 @@ abstract class ControlClient_base
 		$this->sock = $sock;
 	}
 
-	public function getLog(): ?Log
+	public function getLog(): ?Common\Log
 	{
-		return Log::get($this->interface->server->log_control_clients);
+		return Common\Log::get($this->interface->server->log_control_clients);
 	}
 
+	public function getErrorString(int $code): string
+	{
+		return WebSocketCommon\get_error_string($code);
+	}
+	
 	protected function send_command(int $command_type, array $arguments = []): bool
 	{
 		if ($command_type <= 0 || $command_type > 0xFFFF) // 16 bit
@@ -149,7 +153,7 @@ abstract class ControlClient_base
 				$this->getLog()?->out(
 					text: "partial raw_data, buffer length " . strlen($this->read_buffer) . " bytes - Postponing..",
 					entity_id: $this->getID(),
-					level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+					level: Common\constLogLevels::LOG_LEVEL_TRACE
 				);
 				return null; // wait for the content to be full
 			}
@@ -166,7 +170,7 @@ abstract class ControlClient_base
 				$this->getLog()?->out(
 					text: "partial buffered data, expected " . strlen($this->read_buffer) . " bytes, got " . strlen($read_buffer) . " - Postponing..",
 					entity_id: $this->getID(),
-					level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+					level: Common\constLogLevels::LOG_LEVEL_TRACE
 				);
 				return null; // wait for the content to be full
 			}
@@ -231,7 +235,7 @@ abstract class ControlClient_base
 			$this->getLog()?->out(
 				text: "message complete, Dispatching..",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			$rc = $this->dispatch($command, $decrypted_payload);
 			if ($rc === false)
@@ -243,7 +247,7 @@ abstract class ControlClient_base
 			$this->getLog()?->out(
 				text: "some data left in the buffer, trying to process them",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE);
+				level: Common\constLogLevels::LOG_LEVEL_TRACE);
 		}
 		
 		return true;
@@ -270,7 +274,7 @@ abstract class ControlClient_base
 		$this->getLog()?->out(
 			text: "Sending CMD HELO",
 			entity_id: $this->getID(),
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		return $this->send_command(WebSocketCommon\COMMAND_HELO, [
@@ -364,7 +368,7 @@ abstract class ControlClient_base
 		}
 	}
 	
-	protected function getContainer(): Server_base|Service_base
+	protected function getContainer(): Server|Service_base
 	{
 		if ($this->service === null)
 		{

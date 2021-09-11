@@ -29,7 +29,7 @@ class Serializable
 			return;
 		
 		if (!is_object($object))
-			ffErrorHandler::raise ("Can only serialize objects", E_USER_ERROR, $this, get_defined_vars ());
+			throw new \Exception("Can only serialize objects");
 
 		$obj_vars = get_object_vars($object);
 		if (is_array($obj_vars) && count($obj_vars))

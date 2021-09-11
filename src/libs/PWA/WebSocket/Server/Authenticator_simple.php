@@ -2,7 +2,8 @@
 namespace FF\Libs\PWA\WebSocket\Server;
 
 use Exception;
-use FF\Libs\PWA\WebSocket\Common;
+use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
+use FF\Core\Common;
 
 class Authenticator_simple extends Authenticator_base
 {
@@ -93,7 +94,7 @@ class Authenticator_simple extends Authenticator_base
 		if (!isset($payload["id"]))
 		{
 			$client->setError(
-				code: Common\ERROR_UNAUTHORIZED,
+				code: WebSocketCommon\ERROR_UNAUTHORIZED,
 				entity_id: $client->getID()
 			);
 			$client->disconnect();
@@ -102,7 +103,7 @@ class Authenticator_simple extends Authenticator_base
 		if (!isset($this->accounts[$payload["id"]]))
 		{
 			$client->setError(
-				code: Common\ERROR_UNAUTHORIZED,
+				code: WebSocketCommon\ERROR_UNAUTHORIZED,
 				entity_id: $client->getID()
 			);
 			$client->disconnect();
@@ -128,7 +129,7 @@ class Authenticator_simple extends Authenticator_base
 		else
 		{
 			$client->setError(
-				code: Common\ERROR_UNAUTHORIZED,
+				code: WebSocketCommon\ERROR_UNAUTHORIZED,
 				additional_data: $payload,
 				entity_id: $client->getID()
 			);

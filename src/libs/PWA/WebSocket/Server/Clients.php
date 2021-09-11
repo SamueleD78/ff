@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  *
  * @package FormsFramework
  * @subpackage Libs

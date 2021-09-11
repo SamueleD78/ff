@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -12,7 +12,7 @@
 
 namespace FF\Libs\PWA\WebSocket\ControlClient;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
-use FF\Libs\PWA\WebSocket\Common\Log;
+use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
 class ControlClient_unixsock extends ControlClient_base
@@ -21,9 +21,9 @@ class ControlClient_unixsock extends ControlClient_base
 
 	public string $log_key = "cc";
 
-	public function getLog(): ?Log
+	public function getLog(): ?Common\Log
 	{
-		return Log::get($this->log_key);
+		return Common\Log::get($this->log_key);
 	}
 
 	public function connect(string $path) : bool

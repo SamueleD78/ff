@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -31,16 +31,16 @@ function get_error_string(int $code): string
 		ERROR_ENCRYPTED_UNEXPECTED		=> "Plain message expected, got encrypted",
 		ERROR_UNKNOWN_SYS_MSG			=> "Unknown System Message",
 		ERROR_MISMATCHED_ANSWER			=> "Response doesn't match the command sent",
-		ERROR_SERVER_ERROR				=> "Server_base Communication Error",
+		ERROR_SERVER_ERROR				=> "Server Communication Error",
 		ERROR_SERVICE_UNKNWON			=> "Service unknown",
 		ERROR_DECRYPT_FAILED			=> "Decryption failed",
-		ERROR_PROTOCOL_TOO_NEW			=> "Server_base protocol is too new",
+		ERROR_PROTOCOL_TOO_NEW			=> "Server protocol is too new",
 		ERROR_UNIXSOCK_WRONGPATH		=> "Wrong Path for socket",
 		ERROR_WRONG_HANDLER				=> "Wrong handler",
 		ERROR_SEND_SOCKET				=> "Cannot send to websocket",
 		ERROR_CONTEXT_CREATION			=> "Unable to create SSL context",
-		ERROR_ALREADY_STARTED			=> "Server_base already started",
-		ERROR_SERVER_SOCKET				=> "Unable to create Server_base socket",
+		ERROR_ALREADY_STARTED			=> "Server already started",
+		ERROR_SERVER_SOCKET				=> "Unable to create Server socket",
 		ERROR_CONTROL_INTERFACE			=> "Unable to start Control IF",
 		ERROR_UNIXSOCK_EXISTS			=> "Unix socket already exists",
 		ERROR_CONTROL_SOCKET			=> "Unable to create Control IF socket",

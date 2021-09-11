@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -11,8 +11,6 @@
  */
 
 namespace FF\Libs\PWA\WebSocket\Server;
-
-use FF\Libs\PWA\WebSocket\Common\Log;
 
 abstract class Authenticator_base
 {

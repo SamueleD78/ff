@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -12,6 +12,7 @@
 
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
+use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
 class ControlInterface_tcp extends ControlInterface_base
@@ -58,7 +59,7 @@ class ControlInterface_tcp extends ControlInterface_base
 		{
 			$this->getLog()?->out(
 				text: "Create a streaming socket of type TCP/IP over SSL on address " . $this->addr . ":" . $this->port . ".. ",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 				newline: false
 			);
 
@@ -67,7 +68,7 @@ class ControlInterface_tcp extends ControlInterface_base
 			]);
 			if (!is_resource($context))
 			{
-				$this->setError(code: WebSocketCommon\ERROR_CONTEXT_CREATION,level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				$this->setError(code: WebSocketCommon\ERROR_CONTEXT_CREATION,level: Common\constLogLevels::LOG_LEVEL_FATAL);
 				return false;
 			}
 
@@ -83,7 +84,7 @@ class ControlInterface_tcp extends ControlInterface_base
 		{
 			$this->getLog()?->out(
 				text: "Create a streaming socket of type TCP/IP on address " . $this->addr . ":" . $this->port . ".. ",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 				newline: false
 			);
 			$this->sock = stream_socket_server(
@@ -98,7 +99,7 @@ class ControlInterface_tcp extends ControlInterface_base
 		{
 			$this->setError(code: WebSocketCommon\ERROR_CONTROL_SOCKET,
 				additional_data: ["errno" => $errno, "errstr" => $errstr],
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				level: Common\constLogLevels::LOG_LEVEL_FATAL);
 			return false;
 		}
 
@@ -108,7 +109,7 @@ class ControlInterface_tcp extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 
 		return true;
@@ -121,7 +122,7 @@ class ControlInterface_tcp extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Stopping.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 
@@ -130,7 +131,7 @@ class ControlInterface_tcp extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 	}
 
@@ -194,7 +195,7 @@ class ControlInterface_tcp extends ControlInterface_base
 			$this->setError(code: WebSocketCommon\ERROR_UNKNOWN_SOCKET);
 			$this->getLog()?->out(
 				text: "Detaching socket [" . $id . "]",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			@fclose($sock);
 			$this->server->removeSocket($id);
@@ -206,7 +207,7 @@ class ControlInterface_tcp extends ControlInterface_base
 			$this->setError(code: WebSocketCommon\ERROR_UNKNOWN_CLIENT);
 			$this->getLog()?->out(
 				text: "Detaching socket [" . $id . "]",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			@fclose($sock);
 			$this->server->removeSocket($id);
@@ -221,7 +222,7 @@ class ControlInterface_tcp extends ControlInterface_base
 		{
 			$this->getLog()?->out(
 				text: "FALSE on fread, disconnecting",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 
 			$client->disconnect();
@@ -235,7 +236,7 @@ class ControlInterface_tcp extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Data Received - client [" . $id . "] - " . $bytes . " bytes",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		$rc = $client->receive($raw_data, $bytes);

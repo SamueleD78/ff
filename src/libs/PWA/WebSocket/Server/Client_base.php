@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -11,8 +11,7 @@
  */
 
 namespace FF\Libs\PWA\WebSocket\Server;
-
-use FF\Libs\PWA\WebSocket\Common\Log;
+use FF\Core\Common;
 
 abstract class Client_base
 {
@@ -35,8 +34,8 @@ abstract class Client_base
 		$this->router_match = $router_match;
 	}
 
-	public function getLog() : Log
+	public function getLog() : Common\Log
 	{
-		return Log::get($this->service->server->log_clients);
+		return Common\Log::get($this->service->server->log_clients);
 	}
 }

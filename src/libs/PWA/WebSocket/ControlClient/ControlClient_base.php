@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -12,11 +12,12 @@
 
 namespace FF\Libs\PWA\WebSocket\ControlClient;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
+use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class ControlClient_base
 {
-	use WebSocketCommon\Errors;
+	use Common\Errors;
 	
 	protected mixed $sock		= null;
 	protected bool $encrypt	    = false;
@@ -30,7 +31,12 @@ abstract class ControlClient_base
 	
 	protected string $buffer_read				= "";
 	protected ?string $service					= null;
-	
+
+	public function getErrorString(int $code): string
+	{
+		return WebSocketCommon\get_error_string($code);
+	}
+
 	public function setCommandTimeout(int $secs)
 	{
 		if ($secs < 0)

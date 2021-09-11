@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -11,7 +11,9 @@
  */
 
 namespace FF\Libs\PWA\WebSocket\Server;
+use FF\Core\Common\constLogLevels;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
+use FF\Core\Common;
 
 class ControlInterface_unixsock extends ControlInterface_base
 {
@@ -39,7 +41,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "creating streaming unix socket.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 		
@@ -52,7 +54,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 		{
 			$this->setError(code: WebSocketCommon\ERROR_UNIXSOCK_EXISTS,
 				additional_data: $this->fullpath,
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				level: Common\constLogLevels::LOG_LEVEL_FATAL);
 			return false;
 		}
 
@@ -67,7 +69,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 		{
 			$this->setError(code: WebSocketCommon\ERROR_CONTROL_SOCKET,
 				additional_data: ["fullpath" => $this->fullpath, "errno" => $errno, "errstr" => $errstr],
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_FATAL);
+				level: Common\constLogLevels::LOG_LEVEL_FATAL);
 			return false;
 		}
 
@@ -78,7 +80,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 		
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		return true;
@@ -93,7 +95,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Stopping.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 
@@ -104,7 +106,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 	}
 
@@ -114,7 +116,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Accepting new connection.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 
@@ -137,7 +139,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done [" . $id . "]",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 
 		return $newclient->cmdHelo(); // required by the v1.0.0 control protocol version
@@ -165,7 +167,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 			$this->setError(code: WebSocketCommon\ERROR_UNKNOWN_SOCKET);
 			$this->getLog()?->out(
 				text: "Detaching socket [" . $id . "]",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			@fclose($sock);
 			$this->server->removeSocket($id);
@@ -177,7 +179,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 			$this->setError(code: WebSocketCommon\ERROR_UNKNOWN_CLIENT);
 			$this->getLog()?->out(
 				text: "Detaching socket [" . $id . "]",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			@fclose($sock);
 			$this->server->removeSocket($id);
@@ -192,7 +194,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 		{
 			$this->getLog()?->out(
 				text: "FEOF, disconnecting",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 
 			$client->disconnect();
@@ -206,7 +208,7 @@ class ControlInterface_unixsock extends ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Data Received - client [" . $id . "] - " . $bytes . " bytes",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		$rc = $client->receive($raw_data, $bytes);

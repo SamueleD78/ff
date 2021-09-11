@@ -1,6 +1,14 @@
 <?php
+/**
+ * @package FormsFramework
+ * @subpackage Common
+ * @author Samuele Diella <samuele.diella@gmail.com>
+ * @copyright Copyright (c) 2004-2021, Samuele Diella
+ * @license https://opensource.org/licenses/LGPL-3.0
+ * @link http://www.formsphpframework.com
+ */
 
-namespace FF\Libs\PWA\WebSocket\Common;
+namespace FF\Core\Common;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\ExpectedValues;

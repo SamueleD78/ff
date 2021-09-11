@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -13,11 +13,10 @@
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 use FF\Core\Common;
-use FF\Libs\PWA\WebSocket\Common\Log;
 
 class Websocket
 {
-	use WebSocketCommon\Errors;
+	use Common\Errors;
 	
 	public mixed $sock = null;
 
@@ -39,7 +38,7 @@ class Websocket
 	 * @var array<string, string>
 	 */
 	protected array $headers = [];
-	protected ?Server_base $server = null;
+	protected ?Server $server = null;
 	
 	private bool $handshake_done = false;
 	private ?string $buffer_read = null;
@@ -58,11 +57,15 @@ class Websocket
 		$this->time_connected = microtime(true);
 	}
 
-	function getLog(): ?Log
+	function getLog(): ?Common\Log
 	{
-		return Log::get($this->server->log_sockets);
+		return Common\Log::get($this->server->log_sockets);
 	}
 
+	public function getErrorString(int $code): string
+	{
+		return WebSocketCommon\get_error_string($code);
+	}
 	public function setID($id)
 	{
 		$this->id = $id;
@@ -121,7 +124,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Some data left, processing frame",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 		}
 	}
@@ -132,7 +135,7 @@ class Websocket
 		$this->getLog()?->out(
 			text: "Checking handshake..",
 			entity_id: $this->getID(),
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		/* check if we are dealing with a well-formed content */
@@ -141,7 +144,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Rawdata incomplete, postponing",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			return null;
 		}
@@ -234,7 +237,7 @@ class Websocket
 				$this->getLog()?->out(
 					text: "Rawdata incomplete, postponing",
 					entity_id: $this->getID(),
-					level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+					level: Common\constLogLevels::LOG_LEVEL_DEBUG
 				);
 				return null;
 			}
@@ -262,7 +265,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "..all good, shaking back..",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			
 			$sec_websocket_accept = base64_encode(sha1($processed_headers["Sec-WebSocket-Key"] . "258EAFA5-E914-47DA-95CA-C5AB0DC85B11", true));
@@ -286,7 +289,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "..handshake done",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			
 			$rc = $this->server->route($this, $url_parts["path"], $url_parts["query"] ?? "");
@@ -326,7 +329,7 @@ class Websocket
 		$this->getLog()?->out(
 			text: "Checking frame...",
 			entity_id: $this->getID(),
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		
 		if ($bytes < 2)
@@ -334,7 +337,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Frame incomplete, postponing",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			return null;
 		}
@@ -355,12 +358,12 @@ class Websocket
 			$this->getLog()?->out(
 				text: "flag_fin = $flag_fin",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+				level: Common\constLogLevels::LOG_LEVEL_TRACE
 			);
 			$this->getLog()?->out(
 				text: "Opcode = $opcode (" . WebSocketCommon\PROT_OPCODE_DESCR[$opcode_type] . ")",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+				level: Common\constLogLevels::LOG_LEVEL_TRACE
 			);
 			
 			if($flag_rsv1 || $flag_rsv2 || $flag_rsv3)
@@ -413,7 +416,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Masked = $frame_is_masked",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+				level: Common\constLogLevels::LOG_LEVEL_TRACE
 			);
 
 			// Determine payload length
@@ -429,7 +432,7 @@ class Websocket
 					$this->getLog()?->out(
 						text: "Frame incomplete, postponing",
 						entity_id: $this->getID(),
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 					return null;
 				}
@@ -447,7 +450,7 @@ class Websocket
 					$this->getLog()?->out(
 						text: "Frame incomplete, postponing",
 						entity_id: $this->getID(),
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 					return null;
 				}
@@ -459,7 +462,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Payload Length = $payload_length",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+				level: Common\constLogLevels::LOG_LEVEL_TRACE
 			);
 
 			# Getting/decoding Payload
@@ -477,7 +480,7 @@ class Websocket
 						$this->getLog()?->out(
 							text: "Frame incomplete, postponing [" . strlen($raw_data) . "/" . ($payload_offset + $payload_length) . "]",
 							entity_id: $this->getID(),
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 						return null;
 					}
@@ -501,7 +504,7 @@ class Websocket
 						$this->getLog()?->out(
 							text: "Frame incomplete, postponing",
 							entity_id: $this->getID(),
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 						return null;
 					}
@@ -548,7 +551,7 @@ class Websocket
 						$this->getLog()?->out(
 							$tmp,
 							entity_id: $this->getID(),
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 						$this->disconnect();
 						return false;
@@ -557,7 +560,7 @@ class Websocket
 						$this->getLog()?->out(
 							text: "PING, answering back with a pong" . ($payload_length ? " with payload: " . $payload : ""),
 							entity_id: $this->getID(),
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+							level: Common\constLogLevels::LOG_LEVEL_DEBUG
 						);
 						$this->sendPong($payload);
 						return null;
@@ -572,7 +575,7 @@ class Websocket
 							$this->getLog()?->out(
 								text: "PONG received in answer with matching payload to ping sent at " . date("d/m/Y H:i:s.u", $this->sent_ping_time),
 								entity_id: $this->getID(),
-								level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+								level: Common\constLogLevels::LOG_LEVEL_DEBUG
 							);
 						}
 						else
@@ -580,7 +583,7 @@ class Websocket
 							$this->getLog()?->out(
 								text: "PONG received without asking for it, ignoring",
 								entity_id: $this->getID(),
-								level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+								level: Common\constLogLevels::LOG_LEVEL_WARN
 							);
 						}
 						return null;
@@ -589,7 +592,7 @@ class Websocket
 						$this->getLog()?->out(
 							text: "Unknown control message type, ignoring it",
 							entity_id: $this->getID(),
-							level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+							level: Common\constLogLevels::LOG_LEVEL_WARN
 						);
 						return null;
 				}
@@ -642,7 +645,7 @@ class Websocket
 					$this->getLog()?->out(
 						text: "Fragmented message incomplete, postponing",
 						entity_id: $this->getID(),
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 					return null;
 				}
@@ -684,7 +687,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "ERROR! Ping already sent, waiting for response",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_WARN
+				level: Common\constLogLevels::LOG_LEVEL_WARN
 			);
 			$this->disconnect();
 			return false;
@@ -783,7 +786,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Sending fragmented message",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			
 			$max_payload_data_per_frame = $max_frame_size - $header_size;
@@ -800,7 +803,7 @@ class Websocket
 				$this->getLog()?->out(
 					text: "Sending frame, size " . strlen($tmp),
 					entity_id: $this->getID(),
-					level: WebSocketCommon\constLogLevels::LOG_LEVEL_TRACE
+					level: Common\constLogLevels::LOG_LEVEL_TRACE
 				);
 				
 				$rc = $rc && $this->sendFrame($first ? $opcode : WebSocketCommon\PROT_OPCODE_CONTINUATION, $masked, $tmp, $last, 0, 0, 0);
@@ -809,7 +812,7 @@ class Websocket
 					$this->getLog()?->out(
 						text: "Breaking send",
 						entity_id: $this->getID(),
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 					return false;
 				}
@@ -818,7 +821,7 @@ class Websocket
 					$this->getLog()?->out(
 						text: "Done",
 						entity_id: $this->getID(),
-						level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+						level: Common\constLogLevels::LOG_LEVEL_DEBUG
 					);
 					break;
 				}
@@ -831,7 +834,7 @@ class Websocket
 			$this->getLog()?->out(
 				text: "Sending single-frame message",
 				entity_id: $this->getID(),
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 			return $this->sendFrame($opcode, $masked, $payload, true, 0, 0, 0);
 		}

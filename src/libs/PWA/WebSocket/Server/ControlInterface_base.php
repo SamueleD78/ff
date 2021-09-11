@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -12,15 +12,15 @@
 
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
-use FF\Libs\PWA\WebSocket\Common\Log;
+use FF\Core\Common;
 
 abstract class ControlInterface_base
 {
-	use Clients, WebSocketCommon\Errors;
+	use Clients, Common\Errors;
 	
 	private ?string 		$id;
 	
-	public ?Server_base 	$server = null;
+	public ?Server 	$server = null;
 	
 	public ?string 			$controlclient_class = null;
 
@@ -57,16 +57,21 @@ abstract class ControlInterface_base
 		$this->controlclient_class = $controlclient_class;
 	}
 
-	public function setServer(Server_base $server)
+	public function setServer(Server $server)
 	{
 		if ($this->server)
 			throw new \Exception("The instance already belong to a server");
 		$this->server = $server;
 	}
 	
-	public function getLog(): ?Log
+	public function getLog(): ?Common\Log
 	{
-		return Log::get($this->server->log_control_if);
+		return Common\Log::get($this->server->log_control_if);
+	}
+
+	public function getErrorString(int $code): string
+	{
+		return WebSocketCommon\get_error_string($code);
 	}
 
 	public function setID($id)
@@ -91,7 +96,7 @@ abstract class ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Decrypting data.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 
@@ -101,7 +106,7 @@ abstract class ControlInterface_base
 		{
 			if (strlen($raw_data) < $offset + 2)
 			{
-				$this->setError(code: WebSocketCommon\ERROR_ENCRYPT_FAILED, level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG);
+				$this->setError(code: WebSocketCommon\ERROR_ENCRYPT_FAILED, level: Common\constLogLevels::LOG_LEVEL_DEBUG);
 				return false;
 			}
 			$length = unpack("nuint16", substr($raw_data, $offset, 2))["uint16"];
@@ -126,7 +131,7 @@ abstract class ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		return $buffer;
 	}
@@ -136,7 +141,7 @@ abstract class ControlInterface_base
 		$this->getLog()?->trace();
 		$this->getLog()?->out(
 			text: "Encrypting data.. ",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG,
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG,
 			newline: false
 		);
 
@@ -160,7 +165,7 @@ abstract class ControlInterface_base
 
 		$this->getLog()?->out(
 			text: "Done",
-			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+			level: Common\constLogLevels::LOG_LEVEL_DEBUG
 		);
 		return $buffer;
 	}
@@ -172,7 +177,7 @@ abstract class ControlInterface_base
 		{
 			$this->getLog()?->out(
 				text: "Initializing encryption data",
-				level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
+				level: Common\constLogLevels::LOG_LEVEL_DEBUG
 			);
 
 			if (is_string($this->enc_private_key))

@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -11,8 +11,8 @@
  */
 
 namespace FF\Libs\PWA\WebSocket\Server;
+use FF\Core\Common\Log;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
-use FF\Libs\PWA\WebSocket\Common\Log;
 
 abstract class Service_base
 {
@@ -21,7 +21,7 @@ abstract class Service_base
 	}
 	
 	private ?string $client_type;
-	public ?Server_base $server = null;
+	public ?Server $server = null;
 
 	public ?int $ping_interval_mins				= null;
 	public ?int $ping_max_before_dc				= null;
@@ -40,7 +40,7 @@ abstract class Service_base
 		return Log::get($this->server->log_services);
 	}
 
-	public function setServer(Server_base $server): void
+	public function setServer(Server $server): void
 	{
 		if ($this->server)
 			throw new \Exception("The instance already belong to a server");

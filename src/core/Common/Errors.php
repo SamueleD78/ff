@@ -10,7 +10,7 @@
  * @link https://www.ffphp.com
  */
 
-namespace FF\Libs\PWA\WebSocket\Common;
+namespace FF\Core\Common;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\ExpectedValues;
@@ -24,6 +24,7 @@ trait Errors
 	protected mixed $error_additional_data	= null;
 
 	abstract public function getLog(): ?Log;
+	abstract public function getErrorString(int $code): string;
 	
 	public function setRaiseExceptions(bool $enable)
 	{
@@ -70,7 +71,7 @@ trait Errors
 	): void
 	{
 		$this->error_code				= $code;
-		$this->error_string				= get_error_string($code);
+		$this->error_string				= $this->getErrorString($code);
 		$this->error_additional_data 	= $additional_data;
 
 		$this->getLog()?->error(

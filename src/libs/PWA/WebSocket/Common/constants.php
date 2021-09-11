@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSocket Server_base Library
+ * WebSocket Server Library
  * 
  * @package FormsFramework
  * @subpackage Libs
@@ -13,32 +13,9 @@
 namespace FF\Libs\PWA\WebSocket\Common;
 
 const VERSION							= "1.2.0";
-const DEBUG								= true; // this constant is used only in the lib development process
+const DEBUG								= false; // this constant is used only in the lib development process
 
 const RCV_BUFFER_SIZE					= 4096;
-
-const STREAM_STDOUT = "STDOUT";
-const STREAM_STDERR = "STDERR";
-
-abstract class constLogLevels {
-	const LOG_LEVEL_OFF 					= 0;
-	const LOG_LEVEL_FATAL 					= 1;
-	const LOG_LEVEL_ERROR 					= 2;
-	const LOG_LEVEL_WARN 					= 3;
-	const LOG_LEVEL_INFO 					= 4;
-	const LOG_LEVEL_DEBUG 					= 5;
-	const LOG_LEVEL_TRACE 					= 6;
-	const LOG_LEVEL_ALL 					= 7;
-
-	const LOG_LEVEL_DESCR = [
-		self::LOG_LEVEL_FATAL => "FATAL",
-		self::LOG_LEVEL_ERROR => "ERROR",
-		self::LOG_LEVEL_WARN 	=> "WARN",
-		self::LOG_LEVEL_INFO	=> "INFO",
-		self::LOG_LEVEL_DEBUG => "DEBUG",
-		self::LOG_LEVEL_TRACE => "TRACE",
-	];
-}
 
 const ERROR_ENCRYPT_WRONGKEY			= 1;
 const ERROR_UNAUTHORIZED				= 2;
@@ -97,7 +74,7 @@ const COMMAND_SEND_MESSAGE				= 1005;
 
 const SOCK_TYPE_SERVER					= 1;
 const SOCK_TYPE_CLIENT					= 2;
-const SOCK_TYPE_CONTROL_INTERFACE			= 3;
+const SOCK_TYPE_CONTROL_INTERFACE		= 3;
 const SOCK_TYPE_CONTROL_CLIENT			= 4;
 
 const PROT_OPCODE_CONTINUATION			= 0x0;
@@ -144,6 +121,6 @@ const PROT_CLOSE_CODE_DESCR = [
 	PROT_CLOSE_POLICY_VIOLATION			=> "Policy Violation",
 	PROT_CLOSE_MESSAGE_TOO_BIG			=> "Message Too Big",
 	PROT_CLOSE_MANDATORY_EXT			=> "Mandatory Ext.",
-	PROT_CLOSE_INTERNAL_SERVER_ERR		=> "Internal Server_base Error",
+	PROT_CLOSE_INTERNAL_SERVER_ERR		=> "Internal Server Error",
 	PROT_CLOSE_TLS_HANDSHAKE			=> "TLS handshake",
 ];
