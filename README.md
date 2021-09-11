@@ -20,15 +20,15 @@ Install the custom repository in your composer.json with the command:
 
 <code>
 composer config repositories.ff composer https://www.ffphp.com/composer/splitpackages.json
-</code>
-
+</code>  
+  
 Then require the individual modules you want. For instance:
-
+  
 <code>
 composer require ff/libs_pwa_websocket_server:1.*
-</code>
-
-and that's all.
+</code>  
+  
+and that's all. Don't forget to include the generated file <code>vendor/autoload.php</code>
 
 #### Everything (NOT SUGGESTED)
 
@@ -43,6 +43,9 @@ or Just install it through packagist
 <code>
 composer require samueled78/ff
 </code>
+
+
+but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
 
 ### Which sub-packages are available as today? ###
 
