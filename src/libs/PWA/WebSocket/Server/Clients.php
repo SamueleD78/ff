@@ -17,19 +17,19 @@ use JetBrains\PhpStorm\ArrayShape;
 trait Clients
 {
 	/**
-	 * @var array<string, Client_base|ControlClient_base>
+	 * @var array<string, Client_base|ControlClient>
 	 */
 	protected array $clients = [];
 
 	/**
-	 * @return Client_base[]|ControlClient_base[]
+	 * @return Client_base[]|ControlClient[]
 	 */
 	public function getClients(): array
 	{
 		return $this->clients;
 	}
 
-	public function addClient($id, Client_base|ControlClient_base $client): void
+	public function addClient($id, Client_base|ControlClient $client): void
 	{
 		$this->clients[$id] = $client;
 	}

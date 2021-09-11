@@ -16,7 +16,7 @@ use FF\Core\Common;
 use FF\Libs\PWA\WebSocket\Common\Log;
 use JetBrains\PhpStorm\ArrayShape;
 
-abstract class ControlClient_base
+class ControlClient
 {
 	use WebSocketCommon\Errors;
 	
@@ -31,8 +31,6 @@ abstract class ControlClient_base
 	protected ?string $read_buffer = null;
 	
 	protected mixed $sock = null;
-
-	abstract public function onCustomCmd($payload): array|false;
 
 	#[ArrayShape([
 		"secret" => "string",
@@ -364,7 +362,7 @@ abstract class ControlClient_base
 		}
 	}
 	
-	protected function getContainer(): Server_base|Service_base
+	protected function getContainer(): Server|Service_base
 	{
 		if ($this->service === null)
 		{
@@ -502,5 +500,11 @@ abstract class ControlClient_base
 		{
 			return false;
 		}
+	}
+
+	#[ArrayShape(["error" => "int"])]
+	public function onCustomCmd($payload): array|false
+	{
+		return ["error" => 0];
 	}
 }

@@ -21,7 +21,7 @@ abstract class Service_base
 	}
 	
 	private ?string $client_type;
-	public ?Server_base $server = null;
+	public ?Server $server = null;
 
 	public ?int $ping_interval_mins				= null;
 	public ?int $ping_max_before_dc				= null;
@@ -40,7 +40,7 @@ abstract class Service_base
 		return Log::get($this->server->log_services);
 	}
 
-	public function setServer(Server_base $server): void
+	public function setServer(Server $server): void
 	{
 		if ($this->server)
 			throw new \Exception("The instance already belong to a server");
@@ -48,7 +48,7 @@ abstract class Service_base
 		$this->server = $server;
 	}
 
-	public function newClient(Websocket_base $websocket, $router_match): Client_base|false
+	public function newClient(Websocket $websocket, $router_match): Client_base|false
 	{
 		$this->getLog()?->out(
 			text: "Attaching client [" . $websocket->getID() . "]"

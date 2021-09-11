@@ -16,7 +16,7 @@ use FF\Libs\PWA\WebSocket\Common\Log;
 
 abstract class Client_base
 {
-	public Websocket_base|null  $websocket 		= null;
+	public Websocket|null  $websocket 		= null;
 	public Service_base|null    $service       	= null;
 	protected ?array            $router_match 	= null;
 
@@ -28,7 +28,7 @@ abstract class Client_base
 	
 	abstract function send(mixed $data): bool;
 	
-	public function __construct(Websocket_base $websocket, $router_match, Service_base $service)
+	public function __construct(Websocket $websocket, $router_match, Service_base $service)
 	{
 		$this->websocket = $websocket;
 		$this->service = $service;

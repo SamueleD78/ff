@@ -14,7 +14,7 @@ namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 use JetBrains\PhpStorm\ArrayShape;
 
-abstract class ControlInterface_tcp extends ControlInterface_base
+class ControlInterface_tcp extends ControlInterface_base
 {
 	public string 	$addr			= "127.0.0.1";
 	public int 		$port			= 9000;
@@ -153,7 +153,7 @@ abstract class ControlInterface_tcp extends ControlInterface_base
 
 		@stream_set_blocking($newsock, false);
 
-		/* @var $newclient ControlClient_base */
+		/* @var $newclient ControlClient */
 		$newclient = new $this->controlclient_class($this, $newsock);
 		$id = $this->server->addSocket($newsock, $newclient, WebSocketCommon\SOCK_TYPE_CONTROL_CLIENT);
 		$newclient->setID($id);

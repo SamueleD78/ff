@@ -20,7 +20,7 @@ abstract class ControlInterface_base
 	
 	private ?string 		$id;
 	
-	public ?Server_base 	$server = null;
+	public ?Server 	$server = null;
 	
 	public ?string 			$controlclient_class = null;
 
@@ -57,7 +57,7 @@ abstract class ControlInterface_base
 		$this->controlclient_class = $controlclient_class;
 	}
 
-	public function setServer(Server_base $server)
+	public function setServer(Server $server)
 	{
 		if ($this->server)
 			throw new \Exception("The instance already belong to a server");

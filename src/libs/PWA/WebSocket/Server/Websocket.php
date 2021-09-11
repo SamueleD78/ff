@@ -15,7 +15,7 @@ use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 use FF\Core\Common;
 use FF\Libs\PWA\WebSocket\Common\Log;
 
-abstract class Websocket_base
+class Websocket
 {
 	use WebSocketCommon\Errors;
 	
@@ -39,7 +39,7 @@ abstract class Websocket_base
 	 * @var array<string, string>
 	 */
 	protected array $headers = [];
-	protected ?Server_base $server = null;
+	protected ?Server $server = null;
 	
 	private bool $handshake_done = false;
 	private ?string $buffer_read = null;

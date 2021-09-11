@@ -18,7 +18,7 @@ use FF\Core\Sapi;
 use FF\Core\Common;
 use JetBrains\PhpStorm\ArrayShape;
 
-abstract class Server_base
+class Server
 {
 	use Clients, WebSocketCommon\Errors;
 
@@ -88,10 +88,6 @@ abstract class Server_base
 
 	public bool		$log_payloads				= true;
 
-	abstract function onReady();
-	abstract function onBeforeStop();
-	abstract function onStop();
-
 	function __construct(string $websocket_class)
 	{
 		$this->router = new Sapi\Router();
@@ -125,7 +121,7 @@ abstract class Server_base
 		return $this->services[$name] ?? false;
 	}
 
-	public function addSocket(mixed $sock, Server_base|Websocket_base|ControlInterface_base|ControlClient_base $obj, int $type): string
+	public function addSocket(mixed $sock, Server|Websocket|ControlInterface_base|ControlClient $obj, int $type): string
 	{
 		$id = Common\uuidv4();
 
@@ -150,7 +146,7 @@ abstract class Server_base
 		unset($this->reverse_sockets[$id]);
 	}
 
-	public function route(Websocket_base $websocket, $url, $query): Client_base|false
+	public function route(Websocket $websocket, $url, $query): Client_base|false
 	{
 		$this->getLog()?->trace();
 
@@ -331,7 +327,12 @@ abstract class Server_base
 			level: WebSocketCommon\constLogLevels::LOG_LEVEL_DEBUG
 		);
 
-		$this->onReady();
+		$rc = $this->onReady();
+		if ($rc === false)
+		{
+			$this->stop();
+			return false;
+		}
 
 		$this->getLog()?->out(
 			text: "Listening"
@@ -383,7 +384,7 @@ abstract class Server_base
 					if (count($control_clients)) {
 						foreach ($control_clients as $sock_id) {
 							unset($read[$sock_id]);
-							/* @var $tmp_obj ControlClient_base */
+							/* @var $tmp_obj ControlClient */
 							$tmp_obj = $this->reverse_sockets[$sock_id]["obj"];
 
 							$this->getLog()?->out(
@@ -426,7 +427,7 @@ abstract class Server_base
 						/* all good, create the Websocket intermediate object
 							the client will be created after the handshake because it depends on the service routing */
 
-						/* @var $newclient_sock Websocket_base */
+						/* @var $newclient_sock Websocket */
 						$newclient_sock = new $this->websocket_class($newsock, $this);
 						$tmp_id = $this->addSocket($newsock, $newclient_sock, WebSocketCommon\SOCK_TYPE_CLIENT);
 						$newclient_sock->setID($tmp_id);
@@ -476,7 +477,7 @@ abstract class Server_base
 						continue;
 					}
 
-					/** @var Websocket_base $websocket */
+					/** @var Websocket $websocket */
 					$websocket = $this->reverse_sockets[$sock_id]["obj"];
 					$websocket->time_last_rcv = microtime(true);
 
@@ -574,5 +575,18 @@ abstract class Server_base
 		$this->getLog()?->out(
 			text: "Done"
 		);
+	}
+
+	function onReady(): bool
+	{
+		return true;
+	}
+
+	function onBeforeStop(): void
+	{
+	}
+
+	function onStop(): void
+	{
 	}
 }

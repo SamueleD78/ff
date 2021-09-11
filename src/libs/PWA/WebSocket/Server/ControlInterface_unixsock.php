@@ -13,7 +13,7 @@
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 
-abstract class ControlInterface_unixsock extends ControlInterface_base
+class ControlInterface_unixsock extends ControlInterface_base
 {
 	public ?string 		$path 		= null; // default to sys_get_temp_dir()
 	public string 		$name 		= "ffwebsocket";
@@ -127,7 +127,7 @@ abstract class ControlInterface_unixsock extends ControlInterface_base
 
 		@stream_set_blocking($newsock, false);
 
-		/* @var $newclient ControlClient_base */
+		/* @var $newclient ControlClient */
 		$newclient = new $this->controlclient_class($this, $newsock);
 		$id = $this->server->addSocket($newsock, $newclient, WebSocketCommon\SOCK_TYPE_CONTROL_CLIENT);
 		$newclient->setID($id);
