@@ -38,6 +38,12 @@ You can clone the whole repository with git
 git clone https://github.com/SamueleD78/ff.git
 </code>
 
+or Just install it through packagist
+
+<code>
+composer require samueled78/ff
+</code>
+
 ### Who do I talk to? ###
 
 * Samuele Diella <samuele.diella@gmail.com>
