@@ -44,6 +44,18 @@ or Just install it through packagist
 composer require samueled78/ff
 </code>
 
+### Which sub-packages are available as today? ###
+
+Here is an updated list. All the packages marked with an (*) are support packages, usually included by other main packages (so it's unlikely they will be required directly).
+
+Namespace | Package Name | Porpouse
+-----|--------------|---------
+FF\Core\Common | core_common (*) | common files
+FF\Core\Sapi | core_sapi | Server Application Programming Interface. All the files needed to route and handle various kind of requests libs
+FF\Libs\PWA\WebSocket\Common | libs_pwa_websocket_common (*) | WebSocket Server - common files
+FF\Libs\PWA\WebSocket\Server | libs_pwa_websocket_server | WebSocket Server
+FF\Libs\PWA\WebSocket\ControlClient | libs_pwa_websocket_controlclient | WebSocket Server - Control Client API for controlling the server from an app
+
 ### Who do I talk to? ###
 
 * Samuele Diella <samuele.diella@gmail.com>
