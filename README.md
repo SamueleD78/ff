@@ -28,7 +28,8 @@ Then require the individual modules you want. For instance:
 composer require ff/libs_pwa_websocket_server:1.*
 </code>
 
-and that's all.
+
+and that's all. Don't forget to include the generated file <code>vendor/autoload.php</code>
 
 #### Everything (NOT SUGGESTED)
 
@@ -43,6 +44,9 @@ or Just install it through packagist
 <code>
 composer require samueled78/ff
 </code>
+
+
+but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
 
 ### Which sub-packages are available as today? ###
 
