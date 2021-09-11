@@ -18,15 +18,11 @@ If you don't have setup your composer.json yet, do a <code>composer init</code> 
 
 Install the custom repository in your composer.json with the command:
 
-<code>
-composer config repositories.ff composer https://www.ffphp.com/composer/splitpackages.json
-</code>  
+    composer config repositories.ff composer https://www.ffphp.com/composer/splitpackages.json
+
+Then require the individual modules you want. For instance:<br>
   
-Then require the individual modules you want. For instance:
-  
-<code>
-composer require ff/libs_pwa_websocket_server:1.*
-</code>  
+    composer require ff/libs_pwa_websocket_server:1.*
   
 and that's all. Don't forget to include the generated file <code>vendor/autoload.php</code>
 
@@ -34,15 +30,11 @@ and that's all. Don't forget to include the generated file <code>vendor/autoload
 
 You can clone the whole repository with git
 
-<code>
-git clone https://github.com/SamueleD78/ff.git
-</code>
+    git clone https://github.com/SamueleD78/ff.git
 
 or Just install it through packagist
 
-<code>
-composer require samueled78/ff
-</code>
+    composer require samueled78/ff
 
 
 but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
