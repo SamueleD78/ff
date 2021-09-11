@@ -27,13 +27,13 @@
         },
         "autoload": {
           "psr-4": {
-            "FF\\Libs\\PWA\\WebSocket\\Common": "/"
-          }
+            "FF\\Libs\\PWA\\WebSocket\\Common\\": "/"
+          },
+          "files": [ "constants.php", "helpers.php" ]
         },
         "require": {
           "ext-openssl": "*"
-        },
-        "files": [ "constants.php", "helpers.php" ]
+        }
       }
     ]
   }

@@ -27,7 +27,7 @@
         },
         "autoload": {
           "psr-4": {
-            "FF\\Libs\\PWA\\WebSocket\\ControlClient": "/"
+            "FF\\Libs\\PWA\\WebSocket\\ControlClient\\": "/"
           }
         },
         "require": {

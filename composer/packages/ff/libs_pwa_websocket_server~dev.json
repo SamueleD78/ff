@@ -27,11 +27,12 @@
         },
         "autoload": {
           "psr-4": {
-            "FF\\Libs\\PWA\\WebSocket\\Server": "/"
+            "FF\\Libs\\PWA\\WebSocket\\Server\\": "/"
           }
         },
         "require": {
           "ext-pcntl": "*",
+          "ff/core_sapi": "*",
           "ff/libs_pwa_websocket_common": "*"
         }
       }
