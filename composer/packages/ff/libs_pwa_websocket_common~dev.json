@@ -23,7 +23,7 @@
         "source": {
           "type": "svn",
           "url": "https://github.com/SamueleD78/ff.git/",
-          "reference": "trunk/src/libs/PWA/WebSocket/Common"
+          "reference": "trunk/src/Libs/PWA/WebSocket/Common"
         },
         "autoload": {
           "psr-4": {

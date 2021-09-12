@@ -21,7 +21,7 @@
         "source": {
           "type": "svn",
           "url": "https://github.com/SamueleD78/ff.git/",
-          "reference": "tags/v1.0.0/src/core/Sapi/"
+          "reference": "tags/v1.0.0/src/Core/Sapi/"
         },
         "autoload": {
           "psr-4": {

@@ -7,5 +7,7 @@
       "type": "composer",
       "url": "https://www.ffphp.sam/composer/"
     }
-  ]
+  ],
+
+  "notify-batch" : "https://www.ffphp.com/composer/notify.php"
 }
