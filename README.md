@@ -36,6 +36,9 @@ or Just install it through packagist
 
     composer require samueled78/ff
 
+Or if you want to install the unreleased features
+
+    composer require samueled78/ff:dev-master
 
 but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
 
