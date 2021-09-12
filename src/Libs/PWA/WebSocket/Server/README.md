@@ -268,4 +268,4 @@ Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>
 ```
 To exit from it, just press CTRL+C.
 
-If we want to test it, we could just open the file **test.html** provided in the repository under the path [tests/Libs/PWA/WebSocket/Server](/tests/libs/PWA/WebSocket/Server/test.html)
+If we want to test it, we could just open the file **test.html** provided in the repository under the path [tests/Libs/PWA/WebSocket/Server](/tests/Libs/PWA/WebSocket/Server/test.html)
