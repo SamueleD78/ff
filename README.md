@@ -1,7 +1,5 @@
 # FF - Forms PHP Framework #
 
-***WARNING: The repository is not fully loaded with the code, it will be done gradually. As today, just the code needed for the WebSocket server (one of the framework's libraries) is available.***
-
 ### What is this repository for? ###
 
 FF is a PHP Framework developed in many years of work in the field.  Its aim is to speed up the process of creating web applications, reducing the coding to what is strictly needed. Between style and practicality, it always gives priority to the latter.
@@ -43,6 +41,9 @@ Or if you want to install the unreleased features
 but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
 
 ### Which sub-packages are available as today? ###
+
+The packages are being ported from the beta (closed) version to the release (open) version. While they are updated, they are published here.
+You can be confidant that everything published is (or it should be) fully functional.
 
 Here is an updated list. All the packages marked with an (*) are support packages, usually included by other main packages (so it's unlikely they will be required directly).
 
