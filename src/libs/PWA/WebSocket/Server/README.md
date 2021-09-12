@@ -119,7 +119,7 @@ in PHP to connect to external services, like the MySqli object. So no further ex
 By default, the framework supports two kind of connection to the server: via a TCP connection and via a unix sock, 
 so both version of the ControlClient API object are provided.
 
-## Usage ##
+## Basic Usage ##
 
 Many of the classes provided are suffixed as "_base". Those classes are not intended to be instantiated directly,
 but to be extended in order to make the specific implementation. Of course that doesn't mean that the other classes
@@ -137,9 +137,133 @@ All the needed objects need to be extended and/or instantiated and/or passed as 
 
 Let's see a basic example.
 
-First, if the packages were installed with composer, be careful to include the file <code>vendor/autoload.php</code> at the
-beginning of your script.
+First, if the packages were installed with composer, be careful to include the file <code>vendor/autoload.php</code>
+at the beginning of your script.
 
 ```php
 require("vendor/autoload.php"); /* taking for granted that vendor/ is into the include path */
 ```
+The primary object we have to initialize, is the Server object. Just suppose we are okay with the standard one, so 
+we can safely import the objects and use them directly
+```php
+use FF\Libs\PWA\WebSocket\Server\Server; 
+use FF\Libs\PWA\WebSocket\Server\Websocket;
+
+[...]
+
+$server = new Server(websocket_class: Websocket::class);
+
+$server->addr = "0.0.0.0";
+$server->port = "9100";
+
+$server->allowed_hosts = [
+    "www.ffphp.com:9100",
+    "localhost:9100",
+];
+
+$server->allowed_origins = [
+    "http://localhost",
+    "http://www.ffphp.com",
+];
+```
+The parameters *addr* and *port* are the local ones to bind. Setting *addr* to 0.0.0.0 will cause the server to accept
+connections on any IP, private (like 127.0.0.1, 192.168.1.1, etc) and public.
+
+The parameter *allowed_hosts* filter the incoming connections based on the domain name. This is useful when
+a server is responding to multiple domain names with only one IP.
+
+The parameter *allowed_origin* is the opposite one, it filter the incoming connections based on the origin
+of the request.
+
+Now we want to create a service with the client definition and add it to the server.
+The classes involved are "_base" ones, so we need to extend them.
+```php
+use FF\Libs\PWA\WebSocket\Server\Client_base;
+use FF\Libs\PWA\WebSocket\Server\Service_base;
+
+[...]
+
+class myClient extends Client_base {
+
+	function onOpen(): bool
+	{
+		return true;
+	}
+
+	function onError($code, $text)
+	{
+	}
+
+	function onClose($code, $text)
+	{
+	}
+
+	function onMessage($type, $payload)
+	{
+	}
+
+	function getInfo(): array|null
+	{
+		return null;
+	}
+
+	function send(mixed $data): bool
+	{
+		return $this->websocket->sendText($data);
+	}
+}
+
+
+class myService extends Service_base
+{
+	public function onNewClient($client):bool {
+		return true;
+	}
+
+	public function onRemoveClient($client) {
+	}
+}
+```
+All the function defined above are abstract function that needed to be defined. The **on** functions are a mirror of
+the ones defined by the RFC on the client side, but obviously here are regarding the server.
+
+As it can be seen, the **onOpen** function needs to return a bool. 
+If it's true, the client will be accepted. Returning false cause the client to be disconnected.
+
+the **getInfo** function is used to retrieve custom information about the client.
+A good example could be returning the user id associated with the connection on our protocol implementation.
+
+The **send** function is responsible for sending the data to the connected client. Websockets can send data of type
+text or binary, which type depends on our protocol implementation. In this case we are simply using the Websocket
+**sendText** function because we are going to realize a simple text exchange test.
+
+Now we need to add the service with his proper client to the server:
+```php
+$service = new myService(myClient::class);
+$server->addService("the_only_service", $service);
+
+$server->router->addRule("/", [
+	"service" => "the_only_service"
+]);
+```
+As it can be seen, after instancing the service, it needs to be added to the server passing a "name".
+This name will be used by the router to match the path with the proper service.
+
+The router is an object used by the server that maps source paths (the ones we use while connecting to the socket)
+to the services, and he does so using the name we provided before, as we can see in the example. It accept many
+params, but we want to stay simple for the sake of our example.
+
+At this point, everything is set for running our base server. So we start it adding the code:
+```php
+$server->start();
+```
+and that's enough. In order to test it just write php -f scriptname.php, and you will se the log from the server, 
+something like that:
+```text
+Forms PHP Framework WebSocket Server v1.2.0
+Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>
+
+2021-09-12 00:47:57.817352 INFO  Server                    Starting server..
+2021-09-12 00:47:57.819436 INFO  Server                    Listening
+```
+To exit from it, just press CTRL+C.

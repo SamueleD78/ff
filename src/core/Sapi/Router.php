@@ -259,7 +259,7 @@ class Router
 			if (!isset($this->rules[$priority]))
 				return;
 
-			usort($this->rules[$priority], "\FF\Common\IndexOrder");
+			usort($this->rules[$priority], "\FF\Core\Common\IndexOrder");
 			$this->rules[$priority] = array_reverse($this->rules[$priority]);
 		}
 		else
@@ -269,7 +269,7 @@ class Router
 				if (!isset($this->rules[$i]))
 					continue;
 
-				usort($this->rules[$i], "\FF\Common\IndexOrder");
+				usort($this->rules[$i], "\FF\Core\Common\IndexOrder");
 				$this->rules[$i] = array_reverse($this->rules[$i]);
 			}
 			
