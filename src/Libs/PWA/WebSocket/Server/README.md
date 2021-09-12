@@ -481,11 +481,11 @@ $control->enc_private_key = "/my_keys_dir/key-priv.crt";
 If you have trouble in creating the pairs, you could use the script <code>key-gen.php</code> 
 under [tools/ssl](/tools/ssl/key-gen.php)
 
-If you want to see a full version of the Advanced Usage, watch <code>advanced_server.php</code> 
-under [examples/Libs/PWA/WebSocket/Server](/examples/Libs/PWA/WebSocket/Server/advanced_server.php).
-
 The <code>ControlInterface_tcp</code> class holds the same properties for the connection as the server does. So it will have
 <code>addr</code>, <code>port</code>, <code>ssl</code> and <code>ssl_options</code>.
 It have the *encryption* params, but if you are using a SSL connection they are useless.
 
 As stated before, for the **ControlClient API object**, refer to its own README.md.
+
+If you want to see a full version of the Advanced Usage, watch <code>advanced_server.php</code>
+under [examples/Libs/PWA/WebSocket/Server](/examples/Libs/PWA/WebSocket/Server/advanced_server.php).
