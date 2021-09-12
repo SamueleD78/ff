@@ -267,3 +267,5 @@ Copyright (c) 2021, Samuele Diella <samuele.diella@gmail.com>
 2021-09-12 00:47:57.819436 INFO  Server                    Listening
 ```
 To exit from it, just press CTRL+C.
+
+If we want to test it, we could just open the file **test.html** provided in the repository under the path [tests/Libs/PWA/WebSocket/Server](tests/libs/PWA/WebSocket/Server/test.html)

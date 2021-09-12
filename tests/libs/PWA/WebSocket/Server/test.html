@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="">
+	<head>
+		<title>Websocket tester</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		<h1>Websocket tester</h1>
+		<p>
+			<label for="host">Host <input id="host" value="ws://localhost:9100" /></label> <span style="font-size: small;">use schema wss:// for SSL connection</span>
+		</p>
+		<hr />
+		<p>
+			<button onclick="javascript:websocketif.open();">Open Connection</button>
+			<button onclick="javascript:websocketif.close();">Close Connection</button>
+		</p>
+		<hr />
+		<p>
+			<label for="message">Message <input id="message" value="Hello"/></label> <button onclick="javascript:websocketif.send(document.querySelector('#message').value);">Send</button>
+		</p>
+		<p>
+			<label for="messagesize">Generated message by size <input id="messagesize" value="65536"/></label> <button onclick="javascript:websocketif.send('A' + 'X'.repeat(parseInt(document.querySelector('#messagesize').value - 2)) + 'Z');">Send</button>
+		</p>
+		<p>
+			<button onclick="javascript:websocketif.send('A' + 'X'.repeat(65535) + 'Z');">Send 65537 bytes message</button>
+		</p>
+		<hr />
+		<p>Log</p>
+		<div id="log" style="height: 200px; border: 1px solid black; overflow-y: scroll; font-family: monospace;"></div>
+		<script>
+			var websocketif = (function () {
+				var privates = {
+					socket : null,
+					$log : document.querySelector("#log"),
+				};
+				
+				var publics = {
+					"open" : function (host) {
+						if (privates.socket !== null) {
+							alert('Connection already opened');
+							return;
+						}
+						
+						if (host === undefined) {
+							host = document.querySelector("#host").value;
+						}
+						
+						// Create WebSocket connection.
+						let tmp = new WebSocket(host);
+
+						// Connection opened
+						tmp.addEventListener('open', function (event) {
+							publics.log('Connection opened');
+							privates.socket = tmp;
+						});
+
+						// Listen for messages
+						tmp.addEventListener('message', function (event) {
+							publics.log(['Message from server', event.data]);
+						});
+						
+						// Connection opened
+						tmp.addEventListener('close', function (event) {
+							if (privates.socket === null) {
+								publics.log('Connection refused');
+							} else {
+								privates.socket = null;
+								publics.log('Connection closed');
+							}
+						});
+					},
+					"close" : function () {
+						if (privates.socket === null) {
+							alert('Connection not opened');
+						}
+						privates.socket.close();
+					},
+					"send" : function (message) {
+						if (privates.socket === null) {
+							alert('Connection not opened');
+						}
+						privates.socket.send(message);
+						
+						publics.log('Message Sent');
+					},
+					"log" : function (messages) {
+						let prefix = (new Date()).toISOString() + "  ";
+						if (Object.prototype.toString.call(messages) === "[object String]") {
+							privates.$log.innerHTML += prefix + messages + '<br />';
+						} else if (Object.prototype.toString.call(messages) === "[object Array]") {
+							messages.forEach(function (v) {
+							privates.$log.innerHTML += prefix + v + '<br />';
+							});
+						}
+						privates.$log.innerHTML += '<br />';
+						privates.$log.scrollTop = privates.$log.scrollHeight - privates.$log.clientHeight
+					},
+				};
+				
+				return publics;
+			})();
+		</script>
+	</body>
+</html>
