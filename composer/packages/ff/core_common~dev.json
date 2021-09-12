@@ -27,7 +27,7 @@
           "psr-4": {
             "FF\\Core\\Common\\": "/"
           },
-          "files": [ "helpers.php" ]
+          "files": [ "constants.php", "helpers.php" ]
         }
       }
     ]

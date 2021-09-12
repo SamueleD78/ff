@@ -49,7 +49,7 @@ class Log
 	public string $default_stream 			= STREAM_STDOUT;
 	public string $default_stream_errors 	= STREAM_STDERR;
 
-	private int $class_name_padding = 15;
+	private int $class_name_padding = 25;
 
 	private function __construct(string $name)
 	{
