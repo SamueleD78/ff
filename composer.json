@@ -20,5 +20,16 @@
     "ext-openssl": "*",
     "ext-simplexml": "*",
     "ext-pcntl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "FF\\": "src/"
+    },
+    "files": [
+      "src/Core/Common/constants.php",
+      "src/Core/Common/helpers.php",
+      "src/Libs/PWA/WebSocket/Common/constants.php",
+      "src/Libs/PWA/WebSocket/Common/helpers.php"
+    ]
   }
 }
