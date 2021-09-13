@@ -121,7 +121,7 @@ type of ControlClient, or they can have their own.
 
 The last object is the **ControlClient API object**. This objects works (and looks) very similar to other objects used
 in PHP to connect to external services, like the MySqli object. So no further explanation is needed.
-For an explanation on how to use it, refer to its own [README.md](/src/Libs/PWA/WebSocket/Server/README.md).
+For an explanation on how to use it, refer to its own [README.md](/src/Libs/PWA/WebSocket/ControlClient/README.md).
 
 ## Basic Usage ##
 
@@ -485,7 +485,7 @@ The <code>ControlInterface_tcp</code> class holds the same properties for the co
 <code>addr</code>, <code>port</code>, <code>ssl</code> and <code>ssl_options</code>.
 It have the *encryption* params, but if you are using a SSL connection they are useless.
 
-As stated before, for the **ControlClient API object**, refer to its own [README.md](/src/Libs/PWA/WebSocket/Server/README.md).
+As stated before, for the **ControlClient API object**, refer to its own [README.md](/src/Libs/PWA/WebSocket/ControlClient/README.md).
 
 The full code example of the Advanced Usage is in the file <code>advanced_server.php</code>
 under [examples/Libs/PWA/WebSocket/Server](/examples/Libs/PWA/WebSocket/Server/advanced_server.php).
