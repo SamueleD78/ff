@@ -12,6 +12,41 @@
           "pwa",
           "websocket"
         ],
+        "version": "1.0.1",
+        "license": "LGPL-3.0-or-later",
+        "authors": [
+          {
+            "name": "Samuele Diella",
+            "email": "samuele.diella@gmail.com"
+          }
+        ],
+        "source": {
+          "type": "svn",
+          "url": "https://github.com/SamueleD78/ff.git/",
+          "reference": "tags/v1.0.1/src/Libs/PWA/WebSocket/Server"
+        },
+        "autoload": {
+          "psr-4": {
+            "FF\\Libs\\PWA\\WebSocket\\Server\\": "/"
+          }
+        },
+        "require": {
+          "ext-pcntl": "*",
+          "ff/core_sapi": "*",
+          "ff/libs_pwa_websocket_common": "*"
+        }
+      },
+      {
+        "name": "ff/libs_pwa_websocket_server",
+        "description": "FF: Forms PHP Framework - Libraries - Progressive Web Applications - Websocket Server",
+        "keywords": [
+          "framework",
+          "forms",
+          "ffphp",
+          "ff",
+          "pwa",
+          "websocket"
+        ],
         "version": "1.0.0",
         "license": "LGPL-3.0-or-later",
         "authors": [

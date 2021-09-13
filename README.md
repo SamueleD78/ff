@@ -10,7 +10,7 @@ Its nature is heavily modular, so entire functionalities can be added just inclu
 
 There are two different options
 
-#### Single modules with composer (PREFERRED)
+#### Single modules with private composer repository
 
 If you don't have setup your composer.json yet, do a <code>composer init</code> and follow the instructions
 
@@ -24,7 +24,7 @@ Then require the individual modules you want. For instance:<br>
   
 and that's all. Don't forget to include the generated file <code>vendor/autoload.php</code>
 
-#### Everything (NOT SUGGESTED)
+#### Everything
 
 You can clone the whole repository with git
 
@@ -37,8 +37,6 @@ or Just install it through packagist
 Or if you want to install the unreleased features
 
     composer require samueled78/ff:dev-master
-
-but that's really a lot, and in the end you will find yourself deleting a lot of dirs, so.. go with the preferred.
 
 ### Which sub-packages are available as today? ###
 
