@@ -26,7 +26,7 @@ When in the code and in the documentation we are talking about a **Server**, we 
 A server is basically a standalone process made with a php script running from the CLI (or started as a service)
 that open a network port and listen for incoming connections (usually browsers).  
 
-We could of course start various servers listening on different ports at the same time,
+We could of course start various servers listening on different ports at the same time on the same machine,
 but that's not necessary, because following the Websocket protocol RFC guidelines 
 [#6455](https://datatracker.ietf.org/doc/html/rfc6455)
 this implementation is able to manage different "**Services**" on the same process with the same network port.  
@@ -121,7 +121,7 @@ type of ControlClient, or they can have their own.
 
 The last object is the **ControlClient API object**. This objects works (and looks) very similar to other objects used
 in PHP to connect to external services, like the MySqli object. So no further explanation is needed.
-For an explanation on how to use it, refer to its own README.md.
+For an explanation on how to use it, refer to its own [README.md](/src/Libs/PWA/WebSocket/Server/README.md).
 
 ## Basic Usage ##
 
@@ -273,7 +273,7 @@ Remember that we didn't add any kind of code that send actual messages from the 
 to the client, so the best you could do is to send message from the client to the server and see
 the result in the log.
 
-We can see the full code example in the file <code>basic_server.php</code> 
+The full code example is in the file <code>basic_server.php</code> 
 under [examples/Libs/PWA/WebSocket/Server](/examples/Libs/PWA/WebSocket/Server/basic_server.php).
 
 ## Advanced Usage ##
@@ -485,7 +485,7 @@ The <code>ControlInterface_tcp</code> class holds the same properties for the co
 <code>addr</code>, <code>port</code>, <code>ssl</code> and <code>ssl_options</code>.
 It have the *encryption* params, but if you are using a SSL connection they are useless.
 
-As stated before, for the **ControlClient API object**, refer to its own README.md.
+As stated before, for the **ControlClient API object**, refer to its own [README.md](/src/Libs/PWA/WebSocket/Server/README.md).
 
-If you want to see a full version of the Advanced Usage, watch <code>advanced_server.php</code>
+The full code example of the Advanced Usage is in the file <code>advanced_server.php</code>
 under [examples/Libs/PWA/WebSocket/Server](/examples/Libs/PWA/WebSocket/Server/advanced_server.php).

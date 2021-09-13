@@ -17,25 +17,13 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class ControlClient_unixsock extends ControlClient_base
 {
-	private ?string $path = null;
+	public ?string 		$path 		= null; // default to sys_get_temp_dir() . "/ffwebsocket"
 
-	public string $log_key = "cc";
-
-	public function getLog(): ?Common\Log
-	{
-		return Common\Log::get($this->log_key);
-	}
-
-	public function connect(string $path) : bool
+	public function connect(?string $path) : bool
 	{
 		$this->disconnect(true);
 		
-		if (!strlen($path))
-		{
-			throw new \Exception("unix socket path is required");
-		}
-		
-		$path = realpath($path);
+		$path = realpath($path ?? sys_get_temp_dir() . "/ffwebsocket");
 		
 		/*if (!file_exists($path) || !is_file($path))
 		{

@@ -18,7 +18,14 @@ use JetBrains\PhpStorm\ArrayShape;
 abstract class ControlClient_base
 {
 	use Common\Errors;
-	
+
+	public ?string $log_key = null;
+
+	public function getLog(): ?Common\Log
+	{
+		return Common\Log::get($this->log_key);
+	}
+
 	protected mixed $sock		= null;
 	protected bool $encrypt	    = false;
 	

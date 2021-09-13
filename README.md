@@ -47,11 +47,11 @@ Here is an updated list. All the packages marked with an (*) are support package
 
 Namespace | Package Name | Porpouse
 -----|--------------|---------
-FF\Core\Common | core_common (*) | common files
+FF\Core\Common | core_common | FF common classes, helpers and constants
 FF\Core\Sapi | core_sapi | Server Application Programming Interface. All the files needed to route and handle various kind of requests
-FF\Libs\PWA\WebSocket\Common | libs_pwa_websocket_common (*) | WebSocket Server - common files
+FF\Libs\PWA\WebSocket\Common | libs_pwa_websocket_common (*) | WebSocket Server - classes, helpers and constants
 FF\Libs\PWA\WebSocket\Server | [libs_pwa_websocket_server](src/Libs/PWA/WebSocket/Server) | WebSocket Server
-FF\Libs\PWA\WebSocket\ControlClient | libs_pwa_websocket_controlclient | WebSocket Server - Control Client API for controlling the server from an app
+FF\Libs\PWA\WebSocket\ControlClient | [libs_pwa_websocket_controlclient](src/Libs/PWA/WebSocket/ControlClient) | WebSocket Server - Control Client API for controlling the server from an app
 
 ### Who do I talk to? ###
 

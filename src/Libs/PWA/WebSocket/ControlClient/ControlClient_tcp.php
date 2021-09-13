@@ -43,13 +43,6 @@ class ControlClient_tcp extends ControlClient_base
 	])]
 	public array $ssl_options		= []; // see https://www.php.net/manual/en/context.ssl.php
 
-	public string $log_key = "cc";
-
-	public function getLog(): ?Common\Log
-	{
-		return Common\Log::get($this->log_key);
-	}
-
 	public function connect(string $path) : bool
 	{
 		$this->disconnect(true);
