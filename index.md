@@ -1,37 +1,56 @@
-## Welcome to GitHub Pages
+## Welcome to Forms, PHP Framework
 
-You can use the [editor on GitHub](https://github.com/SamueleD78/ff/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+FF is a PHP Framework developed in many years of work in the field.  Its aim is to speed up the process of creating web applications, reducing the coding to what is strictly needed. Between style and practicality, it always gives priority to the latter.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Its nature is heavily modular, so entire functionalities can be added just including a directory in the project. The same goes for the visualization. Just downloading a theme not only the look but also the functionality and the behaviour of the web app could change with no need to do a single change to the code. 
 
-### Markdown
+### How do I get the code? ###
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+There are two different options
 
-```markdown
-Syntax highlighted code block
+#### Single modules with private composer repository
 
-# Header 1
-## Header 2
-### Header 3
+If you don't have setup your composer.json yet, do a <code>composer init</code> and follow the instructions
 
-- Bulleted
-- List
+Install the custom repository in your composer.json with the command:
 
-1. Numbered
-2. List
+    composer config repositories.ff composer https://www.ffphp.com/composer/splitpackages.json
 
-**Bold** and _Italic_ and `Code` text
+Then require the individual modules you want. For instance:<br>
+  
+    composer require ff/libs_pwa_websocket_server:1.*
+  
+and that's all. Don't forget to include the generated file <code>vendor/autoload.php</code>
 
-[Link](url) and ![Image](src)
-```
+#### Everything
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+You can clone the whole repository with git
 
-### Jekyll Themes
+    git clone https://github.com/SamueleD78/ff.git
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/SamueleD78/ff/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+or Just install it through packagist
 
-### Support or Contact
+    composer require samueled78/ff
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Or if you want to install the unreleased features
+
+    composer require samueled78/ff:dev-master
+
+### Which sub-packages are available as today? ###
+
+The packages are being ported from the beta (closed) version to the release (open) version. While they are updated, they are published here.
+You can be confidant that everything published is (or it should be) fully functional.
+
+Here is an updated list. All the packages marked with an (*) are support packages, usually included by other main packages (so it's unlikely they will be required directly).
+
+Namespace | Package Name | Porpouse
+-----|--------------|---------
+FF\Core\Common | core_common | FF common classes, helpers and constants
+FF\Core\Sapi | core_sapi | Server Application Programming Interface. All the files needed to route and handle various kind of requests
+FF\Libs\PWA\WebSocket\Common | libs_pwa_websocket_common (*) | WebSocket Server - classes, helpers and constants
+FF\Libs\PWA\WebSocket\Server | [libs_pwa_websocket_server](src/Libs/PWA/WebSocket/Server) | WebSocket Server
+FF\Libs\PWA\WebSocket\ControlClient | [libs_pwa_websocket_controlclient](src/Libs/PWA/WebSocket/ControlClient) | WebSocket Server - Control Client API for controlling the server from an app
+
+### Who do I talk to? ###
+
+* Samuele Diella <samuele.diella@gmail.com>
