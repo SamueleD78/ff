@@ -43,7 +43,13 @@ if ($clients === false)
 if (is_array($clients))
 {
 	$rc = $conn->sendMessage("I can see you...", array_keys($clients));
-	if ($rc === false) var_dump("sendMessage", $conn->getLastError()); else var_dump($rc);
+	if ($rc === false)
+		throw new \Exception(
+			message: "Unable to send message to clients: " . $conn->getLastErrorString(),
+			code: $conn->getLastErrorCode()
+		);
+	else
+		var_dump($rc); // display a report on the send
 }
 
 $conn->disconnect();
