@@ -492,7 +492,12 @@ class Server
 					}
 
 					if (!$bytes) {
-						break;
+						$this->getLog()?->out(
+							text: "no data while something expected, disconnecting",
+							level: Common\constLogLevels::LOG_LEVEL_WARN,
+						);
+						$websocket->disconnect();
+						continue;
 					}
 
 					$this->getLog()?->out(
