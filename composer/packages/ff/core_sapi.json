@@ -10,6 +10,39 @@
           "ffphp",
           "ff"
         ],
+        "version": "1.0.3",
+        "license": "LGPL-3.0-or-later",
+        "authors": [
+          {
+            "name": "Samuele Diella",
+            "email": "samuele.diella@gmail.com"
+          }
+        ],
+        "source": {
+          "type": "svn",
+          "url": "https://github.com/SamueleD78/ff.git/",
+          "reference": "tags/v1.0.3/src/Core/Sapi/"
+        },
+        "autoload": {
+          "psr-4": {
+            "FF\\Core\\Sapi\\": "/"
+          },
+          "files": [ "constants.php" ]
+        },
+        "require": {
+          "ext-simplexml": "*",
+          "ff/core_common": "^1.0.3"
+        }
+      },
+      {
+        "name": "ff/core_sapi",
+        "description": "FF: Forms PHP Framework - Server Application Programming Interface",
+        "keywords": [
+          "framework",
+          "forms",
+          "ffphp",
+          "ff"
+        ],
         "version": "1.0.1",
         "license": "LGPL-3.0-or-later",
         "authors": [

@@ -139,7 +139,7 @@ class Router
 		return $this->addRule($newRule);
 	}
 
-	private function addRule(Rule $rule): static
+	public function addRule(Rule $rule): static
 	{
 		$this->ordered = false;
 		
