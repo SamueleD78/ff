@@ -12,6 +12,7 @@
 
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Core\Common\Log;
+use FF\Core\Sapi\MatchedRule;
 use FF\Libs\PWA\WebSocket\Common as WebSocketCommon;
 
 abstract class Service_base
@@ -48,7 +49,7 @@ abstract class Service_base
 		$this->server = $server;
 	}
 
-	public function newClient(Websocket $websocket, $router_match): Client_base|false
+	public function newClient(Websocket $websocket, MatchedRule $router_match): Client_base|false
 	{
 		$this->getLog()?->out(
 			text: "Attaching client [" . $websocket->getID() . "]"

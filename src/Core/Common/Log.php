@@ -165,11 +165,15 @@ class Log
 		$stream =& $this->getStream(id: $entity_id, is_error: $is_error);
 
 		// if is error, breaks old appended values
-		if ($is_error && !$stream["last_newline"] && !$stream["last_was_error"])
+		// if is error, breaks old appended values
+		if ($is_error)
 		{
-			$infostream =& $this->getStream(id: $entity_id,is_error: false);
-			fwrite($infostream["stream"], "ERROR\n");
-			$infostream["last_newline"] = true;
+			$infostream =& $this->getStream(id: $entity_id, is_error: false);
+			if (!$infostream["last_newline"] && !$infostream["last_was_error"])
+			{
+				fwrite($infostream["stream"], "ERROR\n");
+				$infostream["last_newline"] = true;
+			}
 		}
 
 		$output = "";
@@ -221,6 +225,7 @@ class Log
 		fwrite($stream["stream"], $output);
 
 		$stream["last_newline"] = $newline;
+		$stream["last_was_error"] = $is_error;
 	}
 
 	function error(int $code,

@@ -1,7 +1,7 @@
 <?php
 /**
- * @package FormsFramework
- * @subpackage Core\Sapi
+ * This file is part of FF: Forms PHP Framework
+ *
  * @author Samuele Diella <samuele.diella@gmail.com>
  * @copyright Copyright (c) 2004-2021, Samuele Diella
  * @license https://opensource.org/licenses/LGPL-3.0
@@ -10,374 +10,241 @@
 
 namespace FF\Core\Sapi;
 
-use FF\Core\Common;
+use SimpleXMLElement;
 
 /**
- * @package FormsFramework
- * @subpackage Core\Sapi
- * @author Samuele Diella <samuele.diella@gmail.com>
- * @copyright Copyright (c) 2004-2021, Samuele Diella
- * @license https://opensource.org/licenses/LGPL-3.0
- * @link https://ffphp.com
+ * maps a source to urls depending on the rules set
  */
 class Router
 {
-	const PRIORITY_TOP 			= 0;
-	const PRIORITY_VERY_HIGH	= 1;
-	const PRIORITY_HIGH			= 2;
-	const PRIORITY_NORMAL 		= 3;
-	const PRIORITY_LOW			= 4;
-	const PRIORITY_VERY_LOW		= 5;
-	const PRIORITY_BOTTOM 		= 6;
-	const PRIORITY_DEFAULT 		= self::PRIORITY_NORMAL;
+	/**
+	 * @var array<string, array<string, Rule>>
+	 */
+	public array $rules 		= array();
+	/**
+	 * @var array<string, Rule>
+	 */
+	public array $rules_by_id 	= array();
+
+	public bool $ordered		= false;
 	
-	public $rules 			= array();
-	public $named_rules 	= array();
-	public $counter			= 0;
-	
-	public $ordered			= false;
-	
-	public function getRuleById($id)
+	public function getRuleById(string $id): ?Rule
 	{
-		if (isset($this->named_rules[$id]))
-			return $this->named_rules[$id];
-		else
-			return null;
+		return $this->rules_by_id[$id] ?? null;
 	}
 
 	/**
-	 *
-	 * @param string $source
-	 * @param string|array $destination
-	 * @param int $priority
-	 * @param bool $accept_path_info
-	 * @param bool $process_next
-	 * @param int $index
-	 * @param array $attrs
-	 * @param string|null $reverse
-	 * @param string|null $query
-	 * @param string|null $useragent
-	 * @param bool $blocking
-	 * @param bool $control (cache)
-	 * @param array $hosts
+	 * @throws \Exception
 	 */
-	public function addRule(string $source, string|array $destination, int $priority = self::PRIORITY_DEFAULT, bool $accept_path_info = false, bool $process_next = false, int $index = 0, array $attrs = array(), ?string $reverse = null, ?string $query = null, ?string $useragent = null, bool $blocking = false, bool $control = false, array $hosts = array())
+	public function addXMLRule(string $xml)
 	{
-		// --------------------------------------------
-		// CREAZIONE REGOLA
-		
-		$rule = new \SimpleXMLElement("<rule></rule>");
-		
-		$rule->addChild("source", $source);
-		
-		if (is_array($destination) && count($destination))
-		{
-			$tmp_dest = $rule->addChild("destination");
-			foreach ($destination as $key => $value)
-			{
-				$tmp_dest->addChild($key, $value);
-			}
-			reset($destination);
-		}
-		else
-			$rule->addChild("destination", $destination);
-		
-		switch ($priority)
-		{
-			case self::PRIORITY_TOP:
-				$rule->addChild("priority", "TOP");
-				break;
-
-			case self::PRIORITY_VERY_HIGH:
-				$rule->addChild("priority", "VERY_HIGH");
-				break;
-
-			case self::PRIORITY_HIGH:
-				$rule->addChild("priority", "HIGH");
-				break;
-
-			case self::PRIORITY_LOW:
-				$rule->addChild("priority", "LOW");
-				break;
-
-			case self::PRIORITY_VERY_LOW:
-				$rule->addChild("priority", "VERY_LOW");
-				break;
-
-			case self::PRIORITY_BOTTOM:
-				$rule->addChild("priority", "BOTTOM");
-				break;
-
-			default:
-				$rule->addChild("priority", "NORMAL");
-		}
-		
-		if ($accept_path_info)
-			$rule->addChild("accept_path_info");
-
-		if ($process_next)
-			$rule->addChild("process_next");
-		
-		$rule->addChild("index", $index);
-		
-		if (is_array($attrs) && count($attrs))
-		{
-			foreach ($attrs as $key => $value)
-			{
-				$rule->addAttribute($key, $value);
-			}
-			reset($attrs);
-		}
-		
-		if (is_array($hosts) && count($hosts))
-		{
-			foreach ($hosts as $value)
-			{
-				$rule->addChild("host", $value);
-			}
-			reset($attrs);
-		}
-		
-		if ($reverse)
-			$rule->addChild("reverse", $reverse);
-
-		if ($query !== null)
-			$rule->addChild("query", $query);
-		
-		if (is_array($useragent) && count($useragent))
-		{
-			$tmp_usrag = $rule->addChild("useragent");
-			foreach ($useragent as $key => $value)
-			{
-				$tmp_usrag->addChild($key, $value);
-			}
-			reset($useragent);
-		}
-		
-		if ($blocking)
-			$rule->addChild("blocking");
-
-		if ($control)
-			$rule->addChild("control");
-		
-		// FINE CREAZIONE REGOLA
-		// --------------------------------------------
-
-		$this->addElementRule($rule);
+		$this->newFromSimpleXML(new SimpleXMLElement($xml));
 	}
-	
-	public function addXMLRule($xml)
-	{
-		// --------------------------------------------
-		// CREAZIONE REGOLA
-		
-		$rule = new \SimpleXMLElement($xml);
-		
-		// FINE CREAZIONE REGOLA
-		// --------------------------------------------
 
-		$this->addElementRule($rule);
-	}
-	
-	public function loadFile($file)
+	/**
+	 * @throws \Exception
+	 */
+	public function loadFile(string $file): void
 	{
-		$xml = new \SimpleXMLElement("file://" . $file, null, true);
+		$xml = new SimpleXMLElement("file://" . $file, null, true);
 		
 		if (count($xml->rule))
 		{
 			foreach ($xml->rule as $key => $rule)
 			{
-				if ($key == "comment")
+				if ($key === "comment")
 					continue;
-				
-				$this->addElementRule($rule);
+
+				$this->newFromSimpleXML($rule);
 			}
 		}
-		return;
 	}
-	
-	private function addElementRule($rule)
+
+	/**
+	 * @throws \Exception
+	 */
+	public function newFromSimpleXML(SimpleXMLElement $obj): static
+	{
+		$newRule = new Rule();
+
+		if (isset($obj->priority))
+		{
+			if (!isset(PRIORITY::_REVERSE_DESCR[(string)$obj->priority]))
+				throw new \Exception("Unhandled priority type: " . $obj->priority);
+
+			$newRule->setPriority(PRIORITY::_REVERSE_DESCR[(string)$obj->priority]);
+		}
+
+		if (isset($obj->sources) && is_array($obj->sources))
+		{
+			foreach ($obj->sources as $source)
+			{
+				$newRule->setSource(path: (string)$source);
+			}
+		}
+		else if (isset($obj->source))
+			$newRule->setSource(path: (string)$obj->source);
+		else
+			throw new \Exception("source missing");
+
+		if (isset($obj->query))
+			$newRule->setQuery((string)$obj->query);
+
+		if (isset($obj->useragent))
+			$newRule->setUseragent((string)$obj->useragent);
+
+		if (isset($obj->hosts) && is_array($obj->hosts))
+		{
+			foreach ($obj->hosts as $host)
+			{
+				$newRule->setHost(value: (string)$host);
+			}
+		}
+		else if (isset($obj->host))
+			$newRule->setHost(value: (string)$obj->host);
+
+		if (isset($obj->host_mode_disallow))
+			$newRule->setHostModeDisallow(true);
+
+		if (isset($obj->accept_path_info))
+			$newRule->setAcceptPathInfo(true);
+
+		if (isset($obj->process_next))
+			$newRule->setProcessNext(true);
+
+		if (isset($obj->destinations) && is_array($obj->destinations))
+		{
+			foreach ($obj->destinations as $key => $value)
+			{
+				$newRule->setDestination(key: $key, path: (string)$value);
+			}
+		}
+		else if (isset($obj->destination))
+			$newRule->setDestination(path: (string)$obj->destination);
+		else
+			throw new \Exception("Destination missing");
+
+		if (isset($obj->reverse))
+			$newRule->setReverse((string)$obj->reverse);
+
+		$attrs = $obj->attributes();
+		if (is_array($attrs) && count($attrs))
+		{
+			foreach ($attrs as $key => $value)
+			{
+				$newRule->addAttr($key, $value);
+			}
+		}
+
+		return $this->addRule($newRule);
+	}
+
+	private function addRule(Rule $rule): static
 	{
 		$this->ordered = false;
 		
-		$this->counter++;
-		$rule->counter = $this->counter;
-
-		$attrs = $rule->attributes();
-		
-		// check required params
-		if (isset($rule->priority))
-			$priority = (string)$rule->priority;
-		else
-			$priority = "NORMAL";
-
-		if (!isset($rule->index))
-			$rule->addChild("index", "0");
-
-		// convert object, cache or not
-		$rule = new Common\Serializable($rule);
-
 		// populate queues
-		if (isset($attrs["id"]))
-			$this->named_rules[(string)$attrs["id"]] = $rule;
-		
-		switch (strtoupper($priority))
-		{
-			case "TOP":
-				$this->rules[self::PRIORITY_TOP][] = $rule;
-				break;
+		$this->rules_by_id[$rule->getID()] = $rule;
+		$this->rules[$rule->getPriorityDesc()][$rule->getID()] = $rule;
 
-			case "VERY_HIGH":
-				$this->rules[self::PRIORITY_VERY_HIGH][] = $rule;
-				break;
-
-			case "HIGH":
-				$this->rules[self::PRIORITY_HIGH][] = $rule;
-				break;
-
-			case "LOW":
-				$this->rules[self::PRIORITY_LOW][] = $rule;
-				break;
-
-			case "VERY_LOW":
-				$this->rules[self::PRIORITY_VERY_LOW][] = $rule;
-				break;
-
-			case "BOTTOM":
-				$this->rules[self::PRIORITY_BOTTOM][] = $rule;
-				break;
-
-			default:
-				$this->rules[self::PRIORITY_DEFAULT][] = $rule;
-		}
+		return $this;
 	}
-	
-	public function orderRules($priority = null)
+
+	/**
+	 * @param null $priority
+	 * @return $this
+	 */
+	public function orderRules($priority = null): static
 	{
 		if ($priority)
 		{
 			if (!isset($this->rules[$priority]))
-				return;
+				return $this;
 
 			usort($this->rules[$priority], "\FF\Core\Common\IndexOrder");
 			$this->rules[$priority] = array_reverse($this->rules[$priority]);
 		}
 		else
 		{
-			for($i = self::PRIORITY_TOP; $i <= self::PRIORITY_BOTTOM; $i++)
+			foreach ($this->rules as $key => $whocares)
 			{
-				if (!isset($this->rules[$i]))
-					continue;
-
-				usort($this->rules[$i], "\FF\Core\Common\IndexOrder");
-				$this->rules[$i] = array_reverse($this->rules[$i]);
+				usort($this->rules[$key], "\FF\Core\Common\IndexOrder");
+				$this->rules[$key] = array_reverse($this->rules[$key]);
 			}
-			
 			$this->ordered = true;
 		}
+
+		return $this;
 	}
-	
-	public function process($url, $query = null, $host = null)
+
+	/**
+	 * @param string $url
+	 * @param string|null $query
+	 * @param string|null $host
+	 * @return MatchedRules
+	 */
+	public function process(string $url, ?string $query = null, ?string $host = null): MatchedRules
 	{
 		$matched_rules = array();
 
-		for($i = self::PRIORITY_TOP; $i <= self::PRIORITY_BOTTOM; $i++)
+		for($i = PRIORITY::TOP; $i <= PRIORITY::BOTTOM; $i++)
 		{
-			if (!isset($this->rules[$i]))
-				continue;
+			$queue_key = PRIORITY::_DESCR[$i];
 
+			if (!isset($this->rules[$queue_key]))
+				continue;
+			
 			if (!$this->ordered)
-				$this->orderRules($i);
+				$this->orderRules($queue_key);
 				
-			foreach ($this->rules[$i] as $key => $value)
+			foreach ($this->rules[$queue_key] as $rule)
 			{
 				$host_matches = null;
 				
-				$attrs = $value->__attributes; //self::getRuleAttrs($value);
-				
-				if ($host !== null && isset($value->host))
+				if ($host !== null && $rule->hasHosts())
 				{
-					if (!isset($attrs["host_mode"]) || strtolower($attrs["host_mode"]) == "allow")
-						$host_allow = false;
-					if (strtolower($attrs["host_mode"]) == "disallow")
-						$host_allow = true;
-					
-					if (count($value->host) == 1)
+					$host_allow = $rule->isHostModeDisallow();
+
+					foreach ($rule->getHosts() as $value)
 					{
 						$host_matches = array();
-						$host_rc = preg_match('/' . str_replace('/', '\/', $value->host) . '/', $host, $host_matches,  PREG_OFFSET_CAPTURE);
+						$host_rc = preg_match('/' . str_replace('/', '\/', $value) . '/', $host, $host_matches,  PREG_OFFSET_CAPTURE);
+
 						if ($host_rc)
 						{
-							if (!isset($attrs["host_mode"]) || strtolower($attrs["host_mode"]) == "allow")
+							if (!$rule->isHostModeDisallow())
 								$host_allow |= true;
-							elseif (strtolower($attrs["host_mode"]) == "disallow")
+							else
 								$host_allow &= false;
 						}
 					}
-					else
-					{
-						for($c = 0; $c < count($value->host); $c++)
-						{
-							$host_matches = array();
-							$host_rc = preg_match('/' . str_replace('/', '\/', $value->host[$c]) . '/', $host, $host_matches,  PREG_OFFSET_CAPTURE);
 
-							if ($host_rc)
-							{
-								if (!isset($attrs["host_mode"]) || strtolower($attrs["host_mode"]) == "allow")
-									$host_allow |= true;
-								elseif (strtolower($attrs["host_mode"]) == "disallow")
-									$host_allow &= false;
-							}
-						}
-					}
-					
 					if (!$host_allow)
 						continue;
 				}
 				
-				if (!is_array($value->source))
+				foreach ($rule->getSources() as $value)
 				{
 					$matches = array();
-					$rc = preg_match('/' . str_replace('/', '\/', $value->source) . '/', $url, $matches,  PREG_OFFSET_CAPTURE);
-					if($rc && isset($value->query) && strlen($value->query) && strlen($query))
-						$rc = preg_match('/' . str_replace('/', '\/', $value->query) . '/', $query, $matches,  PREG_OFFSET_CAPTURE);
-				}
-				else
-				{
-					$rc = false;
-					
-					for($c = 0; $c < count($value->source); $c++)
+					$sub_rc = preg_match('/' . str_replace('/', '\/', $value) . '/', $url, $matches,  PREG_OFFSET_CAPTURE);
+					if ($sub_rc && strlen($query) && $rule->getQuery())
+						$sub_rc = preg_match('/' . str_replace('/', '\/', $rule->getQuery()) . '/', $query, $matches,  PREG_OFFSET_CAPTURE);
+					if ($sub_rc)
 					{
-						$matches = array();
-						$sub_rc = preg_match('/' . str_replace('/', '\/', $value->source[$c]) . '/', $url, $matches,  PREG_OFFSET_CAPTURE);
-						if($sub_rc && isset($value->query[$c]) && strlen($value->query[$c]) && strlen($query))
-							$sub_rc = preg_match('/' . str_replace('/', '\/', $value->query[$c]) . '/', $query, $matches,  PREG_OFFSET_CAPTURE);
-						$rc |= $sub_rc;
+						$matched_rules[$rule->getID()] = new MatchedRule(
+							rule: $rule,
+							source: $value,
+							params: $matches,
+							host_params: $host_matches
+						);
+						break;
 					}
 				}
-				
-				if ($rc)
-				{
-					if (isset($attrs["id"]) && strlen((string)$attrs["id"]))
-						$matched_rules[(string)$attrs["id"]] = array("rule" => $value, "params" => $matches);
-					else
-						$matched_rules[] = array("rule" => $value, "params" => $matches, "host_params" => $host_matches);
-				}
 			}
-			reset($this->rules[$i]);
 		}
 		
 		$this->ordered = true;
 		
-		return $matched_rules;
-	}
-	
-	static function getRuleAttrs($rule)
-	{
-		if (get_class($rule) == "FF\Common\Serializable")
-			return $rule->__attributes;
-		else
-			return $rule->attributes();
-
+		return new MatchedRules($matched_rules);
 	}
 }

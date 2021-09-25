@@ -21,16 +21,13 @@ class Serializable
 
 	/**
 	 * Crea una copia dell'oggetto esaminando proprietà, metodi ed attributi
-	 * @param Object $object l'oggetto o la risorsa
+	 * @param object|null $object l'oggetto o la risorsa
 	 */
-	function  __construct($object = null)
+	function  __construct(?object $object = null)
 	{
 		if ($object === null)
 			return;
 		
-		if (!is_object($object))
-			throw new \Exception("Can only serialize objects");
-
 		$obj_vars = get_object_vars($object);
 		if (is_array($obj_vars) && count($obj_vars))
 		{

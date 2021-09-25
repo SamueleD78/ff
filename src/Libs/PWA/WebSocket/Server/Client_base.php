@@ -12,12 +12,13 @@
 
 namespace FF\Libs\PWA\WebSocket\Server;
 use FF\Core\Common;
+use FF\Core\Sapi\MatchedRule;
 
 abstract class Client_base
 {
-	public Websocket|null  $websocket 		= null;
-	public Service_base|null    $service       	= null;
-	protected ?array            $router_match 	= null;
+	public 		Websocket  			$websocket;
+	public 		Service_base    	$service;
+	protected 	MatchedRule			$router_match;
 
 	abstract function onOpen(): bool;
 	abstract function onError($code, $text);
@@ -27,10 +28,10 @@ abstract class Client_base
 	
 	abstract function send(mixed $data): bool;
 	
-	public function __construct(Websocket $websocket, $router_match, Service_base $service)
+	public function __construct(Websocket $websocket, MatchedRule $router_match, Service_base $service)
 	{
-		$this->websocket = $websocket;
-		$this->service = $service;
+		$this->websocket 	= $websocket;
+		$this->service 		= $service;
 		$this->router_match = $router_match;
 	}
 

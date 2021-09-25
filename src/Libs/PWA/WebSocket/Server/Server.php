@@ -157,7 +157,7 @@ class Server
 		$matched_rules = $this->router->process($url, $query);
 		foreach ($matched_rules as $match)
 		{
-			$service = $match["rule"]->destination->service;
+			$service = $match->getRule()->getDestination("service");
 
 			$this->getLog()?->out(
 				text: "Attaching new client to service " . $service,
@@ -168,7 +168,12 @@ class Server
 			$this->addClient($websocket->getID(), $tmp);
 			return $tmp;
 		}
-		
+
+		$this->getLog()?->out(
+			text: "No matching rules, disconnecting",
+			level: Common\constLogLevels::LOG_LEVEL_WARN
+		);
+
 		return false;
 	}
 
@@ -206,13 +211,12 @@ class Server
 		{
 			foreach ($priority as $rule)
 			{
-				if (!isset($rule->destination->service))
+				if (!$service = $rule->getDestination("service"))
 				{
 					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: Common\constLogLevels::LOG_LEVEL_FATAL);
 					return false;
 				}
 
-				$service = $rule->destination->service;
 				if (!isset($this->services[$service]))
 				{
 					$this->setError(code: WebSocketCommon\ERROR_SERVICE_MISSING_DEST,level: Common\constLogLevels::LOG_LEVEL_FATAL);
