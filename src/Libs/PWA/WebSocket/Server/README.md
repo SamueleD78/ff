@@ -238,12 +238,17 @@ on the <code>onNewClient</code> function.
 
 Now we need to add the service with his proper client to the server:
 ```php
+use FF\Core\Sapi\Rule;
+
+[...]
+
 $service = new myService(myClient::class);
 $server->addService("the_only_service", $service);
 
-$server->router->addRule("/", [
-	"service" => "the_only_service"
-]);
+$server->router->addRule((new Rule())
+    ->setSource(path: "/")
+    ->setDestination("service", "the_only_service")
+);
 ```
 As it can be seen, after instancing the service, it needs to be added to the server passing a "name".
 This name will be used by the router to match the path with the proper service.

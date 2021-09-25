@@ -4,6 +4,7 @@ use FF\Libs\PWA\WebSocket\Server\Client_base;
 use FF\Libs\PWA\WebSocket\Server\Server;
 use FF\Libs\PWA\WebSocket\Server\Service_base;
 use FF\Libs\PWA\WebSocket\Server\Websocket;
+use FF\Core\Sapi\Rule;
 
 require "vendor/autoload.php";
 
@@ -65,8 +66,9 @@ $server->allowed_origins = [
 
 $service = new myService(myClient::class);
 $server->addService("the_only_service", $service);
-$server->router->addRule("/", [
-	"service" => "the_only_service"
-]);
+$server->router->addRule((new Rule())
+	->setSource(path: "/")
+	->setDestination("service", "the_only_service")
+);
 
 $server->start();

@@ -2,6 +2,7 @@
 
 use FF\Core\Common\constLogLevels;
 use FF\Core\Common\Log;
+use FF\Core\Sapi\Rule;
 use FF\Libs\PWA\WebSocket\Server\Authenticator_simple;
 use FF\Libs\PWA\WebSocket\Server\Client_base;
 use FF\Libs\PWA\WebSocket\Server\ControlClient_base;
@@ -88,9 +89,10 @@ try {
 	$service->ping_max_before_dc = 3;
 
 	$server->addService("the_only_service", $service);
-	$server->router->addRule("/", [
-		"service" => "the_only_service"
-	]);
+	$server->router->addRule((new Rule())
+		->setSource(path: "/")
+		->setDestination("service", "the_only_service")
+	);
 
 	$server->ssl = true;
 
