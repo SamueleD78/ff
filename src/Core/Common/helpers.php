@@ -77,3 +77,73 @@ function IndexOrder($a, $b): ?int
     	
 	return $ret;
 }
+
+/**
+ * get parent'dir with consistent slashes and excluding specials (like .), no matter if windows or linux
+ * @param string $path
+ * @return string
+ */
+function dirname(string $path): string
+{
+	static $windows = null;
+	if ($windows === null)
+	{
+		if(\dirname("/") == "\\")
+			$windows = true;
+		else
+			$windows = false;
+	}
+
+	if (str_ends_with($path, "/"))
+		$res = substr($path, 0, -1);
+	else
+		$res = \dirname($path);
+
+	if($windows)
+		$res = str_replace("\\", "/", $res);
+
+	if($res == ".")
+		$res = "";
+
+	return $res;
+}
+
+function specialchars($string, $quote_style = ENT_QUOTES, $charset = null, $double_encode = true, $remove_np = true): string
+{
+	if ($charset === null)
+		$charset = FF_DEFAULT_CHARSET;
+
+	$string = charset_encode($string, $charset);
+
+	if ($remove_np)
+		return preg_replace("/[\x08\x0B\x0C\x0E-\x1F]/", "", htmlspecialchars($string, $quote_style, $charset, $double_encode));
+	else
+		return htmlspecialchars($string, $quote_style, $charset, $double_encode);
+}
+
+function charset_encode($string, $charset = null)
+{
+	if ($string === null || $string === "")
+		return "";
+
+	if (!is_scalar($string))
+		ErrorHandler::raise("value is not a String", E_USER_ERROR, null, get_defined_vars());
+
+	if ($charset === null)
+		$charset = FF_DEFAULT_CHARSET;
+
+	if (!mb_check_encoding($string, $charset))
+	{
+		switch ($charset)
+		{
+			case "UTF-8":
+				$string = utf8_encode($string);
+				break;
+
+			default:
+				ErrorHandler::raise($charset . " encoding not implemented yet", E_USER_ERROR, null, get_defined_vars());
+		}
+	}
+
+	return $string;
+}

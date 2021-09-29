@@ -17,7 +17,9 @@ class Autoloader
 
     private function __construct($dir = null, array $alternate_maps = [])
     {
-        $this->dir = rtrim($dir ?? dirname(__DIR__), DIRECTORY_SEPARATOR);
+        $this->dir = rtrim(
+        	$dir ?? str_contains(__DIR__, "/vendor/") ? dirname(__DIR__) : dirname(dirname(__DIR__))
+			, DIRECTORY_SEPARATOR);
         $this->mapping = $alternate_maps;
     }
 	
@@ -54,7 +56,7 @@ class Autoloader
 				continue;
 
 			if (file_exists($this->dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . "constants.php"))
-				include_once($this->dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . "constants.php");
+				@include_once($this->dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . "constants.php");
 			if (file_exists($this->dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . "helpers.php"))
 				@include_once($this->dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . "helpers.php");
 			$processed[$dir] = true;

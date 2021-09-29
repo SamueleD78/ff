@@ -19,7 +19,8 @@
     "php": "8.*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "ext-pcntl": "*"
+    "ext-pcntl": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
