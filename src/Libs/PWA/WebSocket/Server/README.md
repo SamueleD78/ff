@@ -385,8 +385,7 @@ By default, <code>STDIN</code> and <code>STDERR</code> will be used. If we want 
 ```php
 $server->getLog()
     ->setOpt("to_file", true)
-    ->setOpt("path", "/my_log_dir/server.log")
-    ;
+    ->setOpt("path", "/my_log_dir/server.log");
 ```
 
 and if we want to split the error log, we could do
@@ -394,8 +393,7 @@ and if we want to split the error log, we could do
 $server->getLog()
     ->setOpt("to_file", true)
     ->setOpt("path", "/my_log_dir/server.log")
-    ->setOpt("path_errors", "/my_log_dir/server-errors.log")*/
-    ;
+    ->setOpt("path_errors", "/my_log_dir/server-errors.log");
 ```
 
 The implementation allows to have different logs for every significant class. The names are all specified in the 
