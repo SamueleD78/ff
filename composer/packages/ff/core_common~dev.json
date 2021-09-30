@@ -28,6 +28,10 @@
             "FF\\Core\\Common\\": "/"
           },
           "files": [ "constants.php", "helpers.php" ]
+        },
+        "require": {
+          "php": "8.*",
+          "ext-mbstring": "*"
         }
       }
     ]

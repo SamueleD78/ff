@@ -10,6 +10,39 @@
           "ffphp",
           "ff"
         ],
+        "version": "1.0.4",
+        "license": "LGPL-3.0-or-later",
+        "authors": [
+          {
+            "name": "Samuele Diella",
+            "email": "samuele.diella@gmail.com"
+          }
+        ],
+        "source": {
+          "type": "svn",
+          "url": "https://github.com/SamueleD78/ff.git/",
+          "reference": "tags/v1.0.4/src/Core/Common/"
+        },
+        "autoload": {
+          "psr-4": {
+            "FF\\Core\\Common\\": "/"
+          },
+          "files": [ "constants.php", "helpers.php" ]
+        },
+        "require": {
+          "php": "8.*",
+          "ext-mbstring": "*"
+        }
+      },
+      {
+        "name": "ff/core_common",
+        "description": "FF: Forms PHP Framework - Common files",
+        "keywords": [
+          "framework",
+          "forms",
+          "ffphp",
+          "ff"
+        ],
         "version": "1.0.3",
         "license": "LGPL-3.0-or-later",
         "authors": [
