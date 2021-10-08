@@ -43,7 +43,7 @@ After connecting, the first thing we need to do is to authenticate ourselves. In
 explicitly call the <code>auth</code> method. The ControlIF protocol requires that the first command we send
 is the <code>auth</code> one, otherwise we'll get disconnected.
 
-The <code>auth</code> method require an array of credentials. The kind of credentials passed the the function depends on the Authenticator used
+The <code>auth</code> method require an array of credentials. The kind of credentials passed to the function depends on the Authenticator used
 on the Server. Let's assume we used the default <code>Authenticator_simple</code> object, with the default credential
 provided
 ```php
